@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: ${SPRING_APPLICATION_NAME}
+
+  datasource:
+    url: jdbc:sqlserver://${LOCAL_DB_URL};databaseName=${LOCAL_DB_NAME};encrypt=true;trustServerCertificate=true
+    username: ${LOCAL_DB_USERNAME}
+    password: ${LOCAL_DB_PASSWORD}
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      use_nationalized_character_data: true
+    show-sql: true
+    database-platform: org.hibernate.dialect.SQLServer2012Dialect
+
+server:
+  port: 8080
