@@ -1,11 +1,13 @@
 package com.hsf.assignment.entity;
 
 import com.hsf.assignment.Enum.UserRole;
+import com.hsf.assignment.Enum.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +26,7 @@ public class User {
     private Long userId;
 
     @Column(name = "username")
-    private String userName;
+    private String username;
 
     @Column(name = "password")
     private String password;
@@ -51,8 +53,16 @@ public class User {
     @OneToMany(mappedBy = "author")
     private List<Application> receiverApplications;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = UserStatus.ACTIVE;
+        }
     }
+
 }
