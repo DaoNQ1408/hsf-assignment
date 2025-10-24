@@ -1,6 +1,6 @@
 package com.hsf.assignment.entity;
 
-import com.hsf.assignment.Enum.UserEnum;
+import com.hsf.assignment.Enum.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,15 +10,17 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Table(name = "users")
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long userId;
 
     @Column(name = "username")
@@ -32,7 +34,7 @@ public class User {
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private UserEnum role;
+    private UserRole role;
 
     @Column(name = "email")
     private String email;
@@ -40,13 +42,13 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "author")
     private List<Application> authorApplications;
 
     @OneToMany(mappedBy = "author")
     private List<Application> applications;
 
-    @OneToMany(mappedBy = "receiver")
+    @OneToMany(mappedBy = "author")
     private List<Application> receiverApplications;
 
     @PrePersist
