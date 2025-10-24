@@ -1,6 +1,8 @@
 package com.hsf.assignment.controller;
 
+import com.hsf.assignment.dto.request.LoginRequest;
 import com.hsf.assignment.dto.request.RegisterRequest;
+import com.hsf.assignment.dto.response.LoginResponse;
 import com.hsf.assignment.dto.response.RegisterResponse;
 import com.hsf.assignment.entity.User;
 import com.hsf.assignment.service.AuthService;
@@ -26,6 +28,12 @@ public class AuthenticationController {
     @PostMapping("register")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         RegisterResponse response = authService.register(registerRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+        LoginResponse response = authService.login(loginRequest);
         return ResponseEntity.ok(response);
     }
 }
