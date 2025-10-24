@@ -1,6 +1,5 @@
 package com.hsf.assignment.entity;
 
-import com.hsf.assignment.Enum.ImageEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,9 +26,8 @@ public class Image {
     @Column(name = "role")
     private String role;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "image_type")
-    private ImageEnum imageType;
+    private String imageType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")
