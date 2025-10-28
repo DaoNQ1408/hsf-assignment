@@ -1,5 +1,6 @@
 package com.hsf.assignment.entity;
 
+import com.hsf.assignment.Enum.ApplicationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +36,8 @@ public class Application {
     private String information;
 
     @Column(name = "application_status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ApplicationStatus status;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
