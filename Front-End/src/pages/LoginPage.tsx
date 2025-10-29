@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Import axios
 import { useAuthStore } from '../stores/authStore';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(''); // Changed username state to email for consistency with API request
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
-  const { login } = useAuthStore();
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const { login } = useAuthStore(); // Keep zustand login for state management
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -16,15 +18,37 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
 
-    const success = await login(email, password);
-    
-    if (success) {
-      navigate('/');
-    } else {
-      setError('Invalid email or password');
+    try {
+      const response = await axios.post('http://localhost:8080/api/authentication/login', {
+        username: email, 
+        password: password
+      });
+
+      const { user, token } = response.data;
+
+      const success = await login(email, password, response.data);
+
+      if (success) {
+        localStorage.setItem('authToken', token);
+        setSuccessMessage('Đăng nhập thành công')
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
+      } else {
+        setError('Đăng nhập thất bại');
+      }
+
+    } catch (err: any) {
+      if (axios.isAxiosError(err) && err.response) {
+        console.error('API Login Error:', err.response.data);
+        setError(err.response.data?.error || err.response.data?.message || 'Invalid username or password');
+      } else {
+        console.error('Login Error:', err);
+        setError('Login failed. Please try again.');
+      }
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (
@@ -38,14 +62,14 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-amber-900 mb-2">
-              Email
+              Username or Email {/* Updated label */}
             </label>
             <input
-              type="email"
+              type="text" // Changed type to text to allow username or email
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
-              placeholder="Enter your email"
+              placeholder="Enter your username or email" // Updated placeholder
               required
             />
           </div>
