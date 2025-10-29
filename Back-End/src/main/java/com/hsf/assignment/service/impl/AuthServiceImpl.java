@@ -40,9 +40,7 @@ public class AuthServiceImpl implements AuthService {
 
         User savedUser = userRepository.save(user);
 
-        String accessToken = jwtService.generateToken(savedUser);
         RegisterResponse registerResponse = userMapper.toRegisterResponse(savedUser);
-        registerResponse.setToken(accessToken);
         userRepository.save(savedUser);
         return registerResponse;
     }

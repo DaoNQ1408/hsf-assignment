@@ -5,9 +5,11 @@ import com.hsf.assignment.dto.response.RegisterResponse;
 import com.hsf.assignment.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
+
     @Mapping(target = "userId", ignore = true)
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "role", expression = "java(com.hsf.assignment.Enum.UserRole.USER)")
@@ -18,7 +20,6 @@ public interface UserMapper {
     @Mapping(target = "receiverApplications", ignore = true)
     User toEntity(RegisterRequest request);
 
-    @Mapping(target = "token", ignore = true)
     RegisterResponse toRegisterResponse(User user);
 
     @Mapping(target = "token", ignore = true)

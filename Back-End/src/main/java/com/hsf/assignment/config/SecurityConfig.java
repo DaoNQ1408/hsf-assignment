@@ -27,6 +27,13 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final CustomerUserDetailsService customerUserDetailsService;
+    private static final String[] PUBLIC_ENDPOINTS = {
+            "/api/authentication/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/api/**",
+    };
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -40,7 +47,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        .requestMatchers("/**").permitAll()
+                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customerUserDetailsService)
