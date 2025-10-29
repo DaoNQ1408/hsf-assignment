@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/application")
 @RestController
 @RequiredArgsConstructor
@@ -18,12 +20,23 @@ public class ApplicationController {
 
     ApplicationServiceImpl applicationServiceImpl;
 
-    @PostMapping
+//    @GetMapping()
+//    public ResponseEntity<List<ApplicationResponse>> getApplication(){
+//        Li
+//    }
+
+
+
+    @PostMapping("/create")
     public ResponseEntity<ApplicationResponse> createApplication(
-            @RequestBody ApplicationRequest applicationRequest
+            @RequestBody ApplicationRequest applicationRequest,
+            @RequestHeader("Authorization") String token
             ){
-        ApplicationResponse response = applicationServiceImpl.createApplication(applicationRequest);
+        ApplicationResponse response = applicationServiceImpl.createApplication(applicationRequest,token);
         return ResponseEntity.ok(response);
     }
+
+
+
 
 }

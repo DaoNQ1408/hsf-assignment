@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface ApplicationService {
-    public ApplicationResponse createApplication(ApplicationRequest applicationRequest);
+    public ApplicationResponse createApplication(ApplicationRequest applicationRequest,String token);
 }

@@ -27,7 +27,7 @@ public class Application {
     private int age;
 
     @Column(name = "weight")
-    private int weight;
+    private Long weight;
 
     @Column(name = "height")
     private int height;
