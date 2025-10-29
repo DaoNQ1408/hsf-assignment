@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../stores/authStore';
+import axios from 'axios'; 
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -11,9 +11,9 @@ export default function RegisterPage() {
     confirmPassword: '',
   });
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState(''); 
   const [loading, setLoading] = useState(false);
 
-  const { register } = useAuthStore();
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,52 +21,72 @@ export default function RegisterPage() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+     setError('');
+     setSuccessMessage('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccessMessage('');
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError('Mật khẩu không khớp');
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
+    if (formData.password.length < 8) {
+       setError('Mật khẩu phải có ít nhất 8 ký tự');
+       return;
+     }
 
     setLoading(true);
 
-    const success = await register({
-      username: formData.username,
-      email: formData.email,
-      phone: formData.phone,
-      password: formData.password,
-    });
+    try {
+      const response = await axios.post('http://localhost:8080/api/authentication/register', {
+        username: formData.username,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password
+      })
+      setSuccessMessage('Đăng ký thành công');
 
-    if (success) {
-      navigate('/');
-    } else {
-      setError('Email already exists');
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+
+    } catch (err: any) {
+       if (axios.isAxiosError(err) && err.response) {
+         console.error('Lỗi đăng ký API:', err.response.data);
+         if (err.response.data && typeof err.response.data === 'object') {
+            const apiError = Object.values(err.response.data).join('. ');
+            setError(apiError || 'Đăng ký không thành công. Vui lòng thử lại.');
+         } else if (typeof err.response.data?.error === 'string') {
+            setError(err.response.data.error);
+         } else {
+            setError('Đăng ký không thành công. Vui lòng thử lại.');
+         }
+       } else {
+         console.error('Lỗi đăng ký:', err);
+         setError('Đã xảy ra lỗi mạng hoặc lỗi không xác định. Vui lòng thử lại.');
+       }
+       setLoading(false); 
     }
-
-    setLoading(false);
   };
+
 
   return (
     <div className="min-h-screen bg-amber-50 flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-amber-900 mb-2">Create Account</h1>
-          <p className="text-amber-700">Join our pet adoption community</p>
+          <h1 className="text-3xl font-bold text-amber-900 mb-2">Tạo tài khoản</h1>
+          <p className="text-amber-700">Tham gia cộng đồng nhận nuôi thú cưng</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-amber-900 mb-2">
-              Username
+              Tên đăng nhập
             </label>
             <input
               type="text"
@@ -74,7 +94,7 @@ export default function RegisterPage() {
               value={formData.username}
               onChange={handleChange}
               className="w-full px-4 py-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
-              placeholder="Choose a username"
+              placeholder="Chọn tên đăng nhập"
               required
             />
           </div>
@@ -89,14 +109,14 @@ export default function RegisterPage() {
               value={formData.email}
               onChange={handleChange}
               className="w-full px-4 py-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
-              placeholder="Enter your email"
+              placeholder="Nhập email của bạn"
               required
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-amber-900 mb-2">
-              Phone
+              Số điện thoại
             </label>
             <input
               type="tel"
@@ -104,14 +124,13 @@ export default function RegisterPage() {
               value={formData.phone}
               onChange={handleChange}
               className="w-full px-4 py-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
-              placeholder="Enter your phone number"
-              required
+              placeholder="Nhập số điện thoại"
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-amber-900 mb-2">
-              Password
+              Mật khẩu
             </label>
             <input
               type="password"
@@ -119,14 +138,14 @@ export default function RegisterPage() {
               value={formData.password}
               onChange={handleChange}
               className="w-full px-4 py-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
-              placeholder="Create a password"
+              placeholder="Tạo mật khẩu (ít nhất 6 ký tự)"
               required
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-amber-900 mb-2">
-              Confirm Password
+              Xác nhận mật khẩu
             </label>
             <input
               type="password"
@@ -134,7 +153,7 @@ export default function RegisterPage() {
               value={formData.confirmPassword}
               onChange={handleChange}
               className="w-full px-4 py-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
-              placeholder="Confirm your password"
+              placeholder="Xác nhận mật khẩu của bạn"
               required
             />
           </div>
@@ -145,20 +164,27 @@ export default function RegisterPage() {
             </div>
           )}
 
+          {successMessage && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+              {successMessage}
+            </div>
+          )}
+
+
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !!successMessage} 
             className="w-full bg-amber-600 text-white py-3 rounded-lg font-medium hover:bg-amber-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Creating account...' : 'Sign Up'}
+            {loading ? 'Đang tạo tài khoản...' : 'Đăng ký'}
           </button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-amber-700">
-            Already have an account?{' '}
+            Đã có tài khoản?{' '}
             <Link to="/login" className="text-amber-600 hover:text-amber-700 font-medium">
-              Sign in
+              Đăng nhập
             </Link>
           </p>
         </div>
