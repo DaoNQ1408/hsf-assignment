@@ -105,10 +105,7 @@ public class ImgServiceImpl implements ImageService {
 //                    Pet pet = petRepo.findByPetId(request.getPetId());
 //                    image.setPet(pet);
 //                }
-                if(request.getUserId() != 0){
-                    User user = userRepo.findByUserId(request.getUserId());
-                       image.setUser(user);
-                }
+
             }
             imageRepo.save(image);
             return mapToResponse(image);
@@ -125,5 +122,13 @@ public class ImgServiceImpl implements ImageService {
 
            imageRepo.delete(image);
 
+    }
+
+    @Override
+    public List<ImageResponse> getImageByUserId(Long userId) {
+        List<Image> images = imageRepo.findByUser_UserId(userId);
+        return images.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 }

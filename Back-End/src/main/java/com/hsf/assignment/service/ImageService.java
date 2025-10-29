@@ -13,4 +13,6 @@ public interface ImageService {
     ImageResponse update(Long id, ImageRequest request);
     void delete(Long id);
 
+    List<ImageResponse> getImageByUserId(Long userId);
+
 }

@@ -28,7 +28,6 @@ public class ImageController {
             @AuthenticationPrincipal UserDetails user,
             @RequestParam(required = false) String role)
     {
-        String userid = user.getUsername();
 
         ImageRequest request = new ImageRequest(file, userId, 1, role);
         return ResponseEntity.ok(imageService.uploadImage(request));
@@ -37,9 +36,15 @@ public class ImageController {
     public ResponseEntity<List<ImageResponse>> getAll() {
         return ResponseEntity.ok(imageService.getAll());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<ImageResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(imageService.getById(id));
+    }
+    @GetMapping("/user/{userid}")
+    public ResponseEntity<List<ImageResponse>> getImageById(@RequestParam Long userId) {
+        List<ImageResponse> images = imageService.getImageByUserId(userId);
+        return ResponseEntity.ok(images);
     }
     @PutMapping(value = "update/{id}", consumes = "multipart/form-data")
     public ResponseEntity<ImageResponse> update(
