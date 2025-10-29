@@ -20,21 +20,6 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long applicationId;
 
-    @Column(name = "pet_id")
-    private Long petId;
-
-    @Column(name = "age")
-    private int age;
-
-    @Column(name = "weight")
-    private Long weight;
-
-    @Column(name = "height")
-    private int height;
-
-    @Column(name = "information", columnDefinition = "TEXT")
-    private String information;
-
     @Column(name = "application_status")
     @Enumerated(EnumType.STRING)
     private ApplicationStatus status;

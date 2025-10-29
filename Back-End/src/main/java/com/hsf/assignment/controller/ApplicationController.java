@@ -25,6 +25,13 @@ public class ApplicationController {
 //        Li
 //    }
 
+    @GetMapping("/forUser")
+    public ResponseEntity<List<ApplicationResponse>> getByUser(
+            @RequestHeader("Authorization") String token
+    ){
+        List<ApplicationResponse> response = applicationServiceImpl.getByUser(token);
+        return ResponseEntity.ok(response);
+    }
 
 
     @PostMapping("/create")

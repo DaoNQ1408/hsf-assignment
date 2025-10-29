@@ -9,8 +9,5 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApplicationRequest {
     Long petId;
-    Long age;
-    int weight;
-    int height;
     String information;
 }

@@ -5,7 +5,13 @@ import com.hsf.assignment.dto.response.ApplicationResponse;
 import com.hsf.assignment.entity.Application;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface ApplicationService {
     public ApplicationResponse createApplication(ApplicationRequest applicationRequest,String token);
+
+    List<ApplicationResponse> getByUser(String token);
+
+//    ApplicationResponse getByUser(String token);
 }
