@@ -35,7 +35,7 @@ export interface AdoptionApplication {
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string, apiResponse?: any) => Promise<boolean>;
   register: (userData: Omit<User, 'id' | 'createdAt'>) => Promise<boolean>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => Promise<boolean>;

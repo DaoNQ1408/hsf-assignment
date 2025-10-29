@@ -8,8 +8,23 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isAuthenticated: false,
 
-      login: async (email: string, password: string) => {
+      login: async (email: string, password: string, apiResponse?: any) => {
         try {
+          if (apiResponse) {
+            const { user, token } = apiResponse;
+            
+            set({ 
+              user: user, 
+              isAuthenticated: true 
+            });
+            
+            if (token) {
+              localStorage.setItem('authToken', token);
+            }
+            
+            return true;
+          }
+          
           const users = JSON.parse(localStorage.getItem('users') || '[]');
           const user = users.find((u: User) => u.email === email && u.password === password);
           
@@ -51,6 +66,8 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        // Xóa token khi logout
+        localStorage.removeItem('authToken');
         set({ user: null, isAuthenticated: false });
       },
 
