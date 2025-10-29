@@ -14,6 +14,6 @@ public class LoginRequest {
     private String username;
 
     @NotBlank(message = "Mật khẩu không được để trống")
-    @Size(min = 8, max = 20, message = "Mật khẩu phải từ 8 đến 20 kí tự")
+    @Size(min = 6, max = 20, message = "Mật khẩu phải từ 6 đến 20 kí tự")
     private String password;
 }
