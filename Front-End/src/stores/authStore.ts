@@ -11,10 +11,10 @@ export const useAuthStore = create<AuthState>()(
       login: async (email: string, password: string, apiResponse?: any) => {
         try {
           if (apiResponse) {
-            const { user, token } = apiResponse;
+            const { token, ...userData } = apiResponse;
             
             set({ 
-              user: user, 
+              user: userData as User, 
               isAuthenticated: true 
             });
             
