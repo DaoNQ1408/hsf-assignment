@@ -17,5 +17,6 @@ public class RegisterResponse {
     private String email;
     private String phone;
     private LocalDateTime createdAt;
-    private String token;
+//    private String token;
+
 }

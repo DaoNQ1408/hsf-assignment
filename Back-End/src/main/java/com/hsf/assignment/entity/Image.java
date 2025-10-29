@@ -1,5 +1,6 @@
 package com.hsf.assignment.entity;
 
+import com.hsf.assignment.Enum.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,8 +24,8 @@ public class Image {
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
-    @Column(name = "role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     @Column(name = "image_type")
     private String imageType;
