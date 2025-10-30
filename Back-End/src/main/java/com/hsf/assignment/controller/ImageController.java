@@ -25,12 +25,17 @@ public class ImageController {
             @RequestParam("file") MultipartFile file,
             @RequestParam long userId,
 //            @RequestParam(required = false) long petId,
-            @AuthenticationPrincipal UserDetails user,
-            @RequestParam(required = false) String role)
+//            @AuthenticationPrincipal UserDetails user,
+            @RequestParam(required = false,defaultValue = "USER") String role)
     {
 
-        ImageRequest request = new ImageRequest(file, userId, 1, role);
-        return ResponseEntity.ok(imageService.uploadImage(request));
+       ImageRequest imageRequest = new ImageRequest();
+       imageRequest.setUserId(userId);
+       imageRequest.setRole(role);
+       imageRequest.setFile(file);
+
+       ImageResponse imageResponse = imageService.uploadImage(imageRequest);
+       return ResponseEntity.ok(imageResponse);
     }
     @GetMapping
     public ResponseEntity<List<ImageResponse>> getAll() {
@@ -53,7 +58,10 @@ public class ImageController {
             @RequestParam(required = false) String role,
             @RequestParam(required = false) Long userId) {
 
-        ImageRequest req = new ImageRequest(file, userId != null ? userId : 0, 1, role);
+        ImageRequest req =  new ImageRequest();
+        req.setUserId(userId);
+        req.setRole(role);
+        req.setFile(file);
         return ResponseEntity.ok(imageService.update(id, req));
     }
     @DeleteMapping("delete/{id}")
