@@ -1,7 +1,7 @@
 package com.hsf.assignment.service.impl;
 
 import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
+import com.hsf.assignment.Enum.UserRole;
 import com.hsf.assignment.dto.request.ImageRequest;
 import com.hsf.assignment.dto.response.ImageResponse;
 import com.hsf.assignment.entity.Image;
@@ -15,8 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @Service
 public class ImgServiceImpl implements ImageService {
@@ -29,34 +28,18 @@ public class ImgServiceImpl implements ImageService {
     @Autowired
     private ImageMapper imageMapper;
 
-    private Cloudinary cloudinary;
 
-    public ImgServiceImpl(Cloudinary cloudinary) {
-        this.cloudinary = cloudinary;
-    }
 
     @Override
     public ImageResponse uploadImage(ImageRequest request) {
         try {
-            Map uploadResult = cloudinary.uploader().upload(
-                    request.getFile().getBytes(),
-                    ObjectUtils.asMap("folder", "pet-adoption")
-            );
-            String imageUrl = uploadResult.get("secure_url").toString();
-            String imageType = uploadResult.get("resource_type").toString();
-
             User user = userRepo.findByUserId(request.getUserId());
-            Pet pet = null;
-            Image image = imageMapper.toEntity(request);
+             Image image = imageMapper.toEntity(request);
             image.setUser(user);
-            image.setImageUrl(imageUrl);
-            image.setImageType(imageType);
-            image.setIsDeleted(false);
-
             imageRepo.save(image);
             return imageMapper.toResponse(image);
-        } catch (Exception ex) {
-            throw new RuntimeException("Lỗi upload image",ex);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi lưu metadata ảnh: " + e.getMessage());
         }
     }
 
@@ -74,26 +57,7 @@ public class ImgServiceImpl implements ImageService {
     public ImageResponse update(Long id, ImageRequest request) {
         try {
             Image image = imageRepo.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy ảnh " ));
-
-            if (request.getFile() != null && !request.getFile().isEmpty()) {
-                Map uploadResult = cloudinary.uploader().upload(
-                        request.getFile().getBytes(),
-                        ObjectUtils.asMap("folder", "pet-adoption")
-                );
-                String imageUrl = uploadResult.get("secure_url").toString();
-                String imageType = uploadResult.get("resource_type").toString();
-
-                image.setImageUrl(imageUrl);
-                image.setImageType(imageType);
-                if(image.getRole() != null){
-                    image.setRole(image.getRole());
-                }
-//                if (request.getPetId() != 0) {
-//                    Pet pet = petRepo.findByPetId(request.getPetId());
-//                    image.setPet(pet);
-//                }
-
-            }
+            imageMapper.updateEntityFromRequest(request, image);
             imageRepo.save(image);
             return imageMapper.toResponse(image);
         }catch (Exception ex) {
