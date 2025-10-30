@@ -2,12 +2,12 @@ package com.hsf.assignment.service.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.hsf.assignment.Enum.UserRole;
 import com.hsf.assignment.dto.request.ImageRequest;
 import com.hsf.assignment.dto.response.ImageResponse;
 import com.hsf.assignment.entity.Image;
 import com.hsf.assignment.entity.Pet;
 import com.hsf.assignment.entity.User;
+import com.hsf.assignment.mapper.ImageMapper;
 import com.hsf.assignment.repository.ImageRepository;
 import com.hsf.assignment.repository.UserRepository;
 import com.hsf.assignment.service.ImageService;
@@ -26,21 +26,13 @@ public class ImgServiceImpl implements ImageService {
     private ImageRepository imageRepo;
 //    @Autowired
 //    private PetRepository petRepo;
+    @Autowired
+    private ImageMapper imageMapper;
 
     private Cloudinary cloudinary;
 
     public ImgServiceImpl(Cloudinary cloudinary) {
         this.cloudinary = cloudinary;
-    }
-
-    private ImageResponse mapToResponse(com.hsf.assignment.entity.Image image) {
-        return ImageResponse.builder()
-                .imageId(image.getImageId())
-                .imageUrl(image.getImageUrl())
-                .role(image.getRole())
-                .imageType(image.getImageType())
-                .userId(image.getUser() != null ? image.getUser().getUserId() : null)
-                .build();
     }
 
     @Override
@@ -55,18 +47,16 @@ public class ImgServiceImpl implements ImageService {
 
             User user = userRepo.findByUserId(request.getUserId());
             Pet pet = null;
-            Image image = Image.builder()
-                    .imageUrl(imageUrl)
-                    .role(UserRole.valueOf(request.getRole().toUpperCase()))
-                    .imageType(imageType)
-                    .isDeleted(false)
-                    .user(user)
-//                    .pet(pet)
-                    .build();
+            Image image = imageMapper.toEntity(request);
+            image.setUser(user);
+            image.setImageUrl(imageUrl);
+            image.setImageType(imageType);
+            image.setIsDeleted(false);
+
             imageRepo.save(image);
-            return mapToResponse(image);
+            return imageMapper.toResponse(image);
         } catch (Exception ex) {
-            throw new RuntimeException("Có lỗi xảy ra: Error uploading image to Cloudinary");
+            throw new RuntimeException("Lỗi upload image",ex);
         }
     }
 
@@ -74,19 +64,16 @@ public class ImgServiceImpl implements ImageService {
     public ImageResponse getById(Long id) {
         Image image = imageRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không Tìm Thấy Ảnh"));
-        return mapToResponse(image);
+        return imageMapper.toResponse(image);
     }
     @Override
     public List<ImageResponse> getAll() {
-        return imageRepo.findAll()
-                .stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+       return  imageMapper.toResponseList(imageRepo.findAll());
     }
     @Override
     public ImageResponse update(Long id, ImageRequest request) {
         try {
-            Image image = imageRepo.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy ảnh với id: " + id));
+            Image image = imageRepo.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy ảnh " ));
 
             if (request.getFile() != null && !request.getFile().isEmpty()) {
                 Map uploadResult = cloudinary.uploader().upload(
@@ -108,7 +95,7 @@ public class ImgServiceImpl implements ImageService {
 
             }
             imageRepo.save(image);
-            return mapToResponse(image);
+            return imageMapper.toResponse(image);
         }catch (Exception ex) {
             ex.printStackTrace();
             throw  new RuntimeException("Lỗi Khi Cập Nhập Ảnh" + ex.getMessage());
@@ -126,9 +113,6 @@ public class ImgServiceImpl implements ImageService {
 
     @Override
     public List<ImageResponse> getImageByUserId(Long userId) {
-        List<Image> images = imageRepo.findByUser_UserId(userId);
-        return images.stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+        return  imageMapper.toResponseList(imageRepo.findByUser_UserId(userId));
     }
 }
