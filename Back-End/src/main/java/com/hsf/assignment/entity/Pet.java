@@ -1,5 +1,6 @@
 package com.hsf.assignment.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,8 +44,10 @@ public class Pet {
     @Column(name = "vaccination")
     private Boolean vaccination;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     private List<Image> images;
+    @JsonIgnore
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     private List<Application> applications;

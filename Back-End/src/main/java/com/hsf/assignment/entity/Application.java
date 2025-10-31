@@ -1,5 +1,6 @@
 package com.hsf.assignment.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hsf.assignment.Enum.ApplicationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,14 +27,16 @@ public class Application {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
+@JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_Id")
     private User author;
+    @JsonIgnore
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet")
     private Pet pet;
+    @JsonIgnore
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id")

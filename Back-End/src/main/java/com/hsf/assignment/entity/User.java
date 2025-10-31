@@ -1,5 +1,6 @@
 package com.hsf.assignment.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hsf.assignment.Enum.UserRole;
 import com.hsf.assignment.Enum.UserStatus;
 import jakarta.persistence.*;
@@ -7,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,14 +44,16 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "author")
+    @JsonIgnore
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Application> authorApplications;
-
-    @OneToMany(mappedBy = "author")
-    private List<Application> applications;
-
-    @OneToMany(mappedBy = "author")
+    @JsonIgnore
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private List<Application> receiverApplications;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Image> images;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
@@ -64,5 +66,4 @@ public class User {
             this.status = UserStatus.ACTIVE;
         }
     }
-
 }

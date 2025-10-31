@@ -21,4 +21,4 @@ jwt:
   refresh-expiration: 604800000
 
 server:
-  port: 8081
+  port: 8082

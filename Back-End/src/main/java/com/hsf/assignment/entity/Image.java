@@ -1,5 +1,6 @@
 package com.hsf.assignment.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,10 +29,11 @@ public class Image {
 
     @Column(name = "image_type")
     private String imageType;
-
+@JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")
     private Pet pet;
+    @JsonIgnore
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
