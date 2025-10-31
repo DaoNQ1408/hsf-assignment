@@ -1,5 +1,6 @@
 package com.hsf.assignment.entity;
 
+import com.hsf.assignment.Enum.ImageType;
 import com.hsf.assignment.Enum.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,11 +25,9 @@ public class Image {
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
-
     @Column(name = "image_type")
-    private String imageType;
+    @Enumerated(EnumType.STRING)
+    private ImageType imageType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")
