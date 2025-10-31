@@ -4,6 +4,7 @@ import com.hsf.assignment.dto.request.LoginRequest;
 import com.hsf.assignment.dto.request.RegisterRequest;
 import com.hsf.assignment.dto.response.LoginResponse;
 import com.hsf.assignment.dto.response.RegisterResponse;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service

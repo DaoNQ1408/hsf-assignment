@@ -10,37 +10,42 @@ import com.hsf.assignment.mapper.ApplicationMapper;
 import com.hsf.assignment.repository.ApplicationRepository;
 import com.hsf.assignment.repository.PetRepository;
 import com.hsf.assignment.service.ApplicationService;
+import com.hsf.assignment.utils.UserUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Transactional(readOnly = true)
 public class ApplicationServiceImpl implements ApplicationService {
+
     ApplicationMapper applicationMapper;
     ApplicationRepository applicationRepository;
-    JwtServiceImpl  jwtServiceImpl;
     PetRepository petRepository;
+    UserUtils userUtils;
 
 
     @Override
-    public List<ApplicationResponse> getByUser(String token) {
-        User user = jwtServiceImpl.getUserByToken(token);
-//        List<Application> list = applicationRepository.findByUser(user);
+    public List<ApplicationResponse> getByUser() {
+        User user = userUtils.getCurrentUser();
+        List<Application> list = applicationRepository.findByAuthor(user);
         List<ApplicationResponse> lists = new ArrayList<>();
 
         return lists;
     }
 
     @Override
-    public ApplicationResponse createApplication(ApplicationRequest applicationRequest,String token) {
-        String jwt = token.substring(7);
-        User user = jwtServiceImpl.getUserByToken(jwt);
+    @Transactional
+    public ApplicationResponse createApplication(ApplicationRequest applicationRequest) {
+        User user = userUtils.getCurrentUser();
+
         Pet pet = petRepository.findById(applicationRequest.getPetId())
                 .orElseThrow(()-> new RuntimeException("Pet not found"));
         Application application = Application.builder()

@@ -1,6 +1,7 @@
 package com.hsf.assignment.config;
 
-import com.hsf.assignment.service.CustomerUserDetailsService;
+import com.hsf.assignment.service.AccountService;
+import com.hsf.assignment.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +16,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
 
-import jakarta.servlet.Filter;
-
-import java.util.Arrays;
-
 
 @Configuration
 @EnableWebSecurity
@@ -26,13 +23,14 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomerUserDetailsService customerUserDetailsService;
+    private final AccountService accountService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     private static final String[] PUBLIC_ENDPOINTS = {
             "/api/authentication/**",
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            "/api/**",
     };
 
     @Bean
@@ -50,8 +48,9 @@ public class SecurityConfig {
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                         .anyRequest().authenticated()
                 )
-                .userDetailsService(customerUserDetailsService)
+                .userDetailsService(accountService)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
