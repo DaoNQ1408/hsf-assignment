@@ -1,5 +1,6 @@
 package com.hsf.assignment.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hsf.assignment.Enum.UserRole;
 import com.hsf.assignment.Enum.UserStatus;
 import jakarta.persistence.*;
@@ -7,9 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Table(name = "users")
@@ -18,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Data
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,6 +61,16 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -64,5 +78,6 @@ public class User {
             this.status = UserStatus.ACTIVE;
         }
     }
+
 
 }

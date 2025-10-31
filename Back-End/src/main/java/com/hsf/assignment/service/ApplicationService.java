@@ -9,9 +9,9 @@ import java.util.List;
 
 @Service
 public interface ApplicationService {
-    public ApplicationResponse createApplication(ApplicationRequest applicationRequest,String token);
+    public ApplicationResponse createApplication(ApplicationRequest applicationRequest);
 
-    List<ApplicationResponse> getByUser(String token);
+    List<ApplicationResponse> getByUser();
 
 //    ApplicationResponse getByUser(String token);
 }
