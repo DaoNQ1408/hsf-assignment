@@ -14,4 +14,6 @@ public interface ApplicationRepository extends JpaRepository<Application,Long> {
 
     List<Application> findByReceiver(User receiver);
 
+    List<Application> findByAuthorUserIdNot(Long id);
+
 }

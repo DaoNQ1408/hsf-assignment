@@ -2,6 +2,7 @@ package com.hsf.assignment.service.impl;
 
 import com.hsf.assignment.Enum.ApplicationStatus;
 import com.hsf.assignment.dto.request.ApplicationRequest;
+import com.hsf.assignment.dto.request.ApplicationUpdateRequest;
 import com.hsf.assignment.dto.response.ApplicationResponse;
 import com.hsf.assignment.entity.Application;
 import com.hsf.assignment.entity.Pet;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     ApplicationRepository applicationRepository;
     PetService petService;
     UserUtils userUtils;
+    private final ApplicationService applicationService;
 
 
     @Override
@@ -89,6 +92,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         Application application =  applicationMapper.toApplication(applicationRequest);
         application.setAuthor(author);
+        application.setStatus(ApplicationStatus.PENDING);
 
         applicationRepository.save(application);
 
@@ -97,11 +101,37 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public ApplicationResponse updateApplication(Long id,ApplicationRequest request) {
+    public ApplicationResponse updateUserApplication(Long id,ApplicationRequest request) {
         Pet pet = petService.findById(request.getPetId());
         Application application = findById(id);
         application.setPet(pet);
         applicationRepository.save(application);
         return applicationMapper.toApplicationResponse(application);
     }
+
+    @Override
+    public ApplicationResponse updateApplication(Long id ,ApplicationUpdateRequest request) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cannot find application with id: " + id));
+
+        applicationMapper.updateEntity(application,request);
+
+        return applicationMapper.toApplicationResponse(
+                applicationRepository.save(application));
+    }
+
+    @Override
+    public List<ApplicationResponse> getAllNotUser(Long id) {
+        return applicationRepository.findByAuthorUserIdNot(id).stream()
+                .map(applicationMapper::toApplicationResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ApplicationResponse> getAll() {
+        return applicationRepository.findAll().stream()
+                .map(applicationMapper::toApplicationResponse)
+                .collect(Collectors.toList());
+    }
+
 }
