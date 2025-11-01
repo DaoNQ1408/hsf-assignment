@@ -1,10 +1,10 @@
 package com.hsf.assignment.controller;
 
 import com.hsf.assignment.dto.request.ApplicationRequest;
+import com.hsf.assignment.dto.request.ApplicationUpdateRequest;
 import com.hsf.assignment.dto.response.ApplicationResponse;
 import com.hsf.assignment.service.ApplicationService;
 import com.hsf.assignment.service.impl.ApplicationServiceImpl;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -15,35 +15,66 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/api/application")
+@RequestMapping("/application")
 @RestController
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@SecurityRequirement(name = "bearerAuth")
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class ApplicationController {
 
     ApplicationService applicationService;
 
-//    @GetMapping()
-//    public ResponseEntity<List<ApplicationResponse>> getApplication(){
-//        Li
-//    }
-
-    @GetMapping("/forUser")
+    @GetMapping("/user")
     public ResponseEntity<List<ApplicationResponse>> getByUser(
     ){
         List<ApplicationResponse> response = applicationService.getByUser();
         return ResponseEntity.ok(response);
     }
 
-
-    @PostMapping("/create")
+    @PostMapping("/user")
     @PreAuthorize("hasAnyAuthority('USER')")
     public ResponseEntity<ApplicationResponse> createApplication(
-            @RequestBody ApplicationRequest applicationRequest){
+            @RequestBody ApplicationRequest applicationRequest
+            ){
         ApplicationResponse response = applicationService.createApplication(applicationRequest);
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/user/{id}")
+    public ResponseEntity<ApplicationResponse> updateApplication(
+            @PathVariable Long id,
+            @RequestBody ApplicationRequest request
+            ){
+        ApplicationResponse response = applicationService.userUpdateApplication(id,request);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<String> deleteApplication(
+            @PathVariable Long id
+            ){
+        String response = applicationService.deleteApplication(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<ApplicationResponse>> getAllApplications(){
+        List<ApplicationResponse> response = applicationService.getAll();
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApplicationResponse> updateApplication(
+            @PathVariable Long id,
+            @RequestBody ApplicationUpdateRequest request
+    ){
+        ApplicationResponse response = applicationService.updateApplication(id,request);
+        return ResponseEntity.ok(response);
+    }
+
+
+
+
+
 
 
 

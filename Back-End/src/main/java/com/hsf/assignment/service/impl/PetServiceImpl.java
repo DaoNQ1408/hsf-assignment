@@ -94,4 +94,10 @@ public class PetServiceImpl implements PetService {
         response.setVaccination(pet.getVaccination());
         return response;
     }
+
+    @Override
+    public Pet findById(Long id) {
+        return petRepository.findById(id)
+                .orElseThrow(()->new RuntimeException("Cannot find pet with id: " + id));
+    }
 }

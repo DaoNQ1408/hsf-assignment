@@ -39,6 +39,7 @@ public class Application {
     @JoinColumn(name = "receiver_id")
     private User receiver;
 
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

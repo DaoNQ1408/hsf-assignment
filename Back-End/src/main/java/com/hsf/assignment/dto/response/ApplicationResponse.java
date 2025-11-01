@@ -16,11 +16,8 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApplicationResponse {
-
-     Pet pet;
-    String information;
+    PetResponse petResponse;
     ApplicationStatus status;
     LocalDateTime createdAt;
-
-//    private User receiver;
+    User receiver;
 }
