@@ -44,9 +44,15 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.findResponseById(id));
     }
 
+//    @GetMapping()
+//    public ResponseEntity<List<ApplicationResponse>> getAll() {
+//        return ResponseEntity.ok(applicationService.getAll());
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApplicationResponse> deleteApplication(@PathVariable Long id) {
         return ResponseEntity.ok(applicationService.deleteApplication(id));
     }
+
+
 }
