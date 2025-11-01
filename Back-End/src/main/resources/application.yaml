@@ -12,7 +12,7 @@ spring:
     hibernate:
       ddl-auto: update
       use_nationalized_character_data: true
-    show-sql: true
+    show-sql: false
     database-platform: org.hibernate.dialect.SQLServer2012Dialect
 
 jwt:

@@ -4,6 +4,7 @@ import com.hsf.assignment.Enum.ApplicationStatus;
 import com.hsf.assignment.dto.request.ApplicationRequest;
 import com.hsf.assignment.dto.request.ApplicationUpdateRequest;
 import com.hsf.assignment.dto.response.ApplicationResponse;
+import com.hsf.assignment.dto.response.PetResponse;
 import com.hsf.assignment.entity.Application;
 import com.hsf.assignment.entity.Pet;
 import com.hsf.assignment.entity.User;
@@ -11,10 +12,13 @@ import com.hsf.assignment.mapper.ApplicationMapper;
 import com.hsf.assignment.repository.ApplicationRepository;
 import com.hsf.assignment.repository.PetRepository;
 import com.hsf.assignment.service.ApplicationService;
+import com.hsf.assignment.service.PetService;
+import com.hsf.assignment.utils.UserUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +27,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Transactional(readOnly = true)
 public class ApplicationServiceImpl implements ApplicationService {
-    ApplicationService applicationService;
     ApplicationMapper applicationMapper;
     ApplicationRepository applicationRepository;
     JwtServiceImpl  jwtServiceImpl;
     PetRepository petRepository;
-//    PetService petService;
-
+    PetService petService;
+    UserUtils userUtils;
 
     @Override
     public Application findById(long id) {
@@ -44,18 +48,20 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<ApplicationResponse> getByUser(String token) {
-        User user = jwtServiceImpl.getUserByToken(token);
-        List<ApplicationResponse> lists = applicationRepository.findAll().stream()
+    public List<ApplicationResponse> getByUser() {
+        User user = userUtils.getCurrentUser();
+        List<Application> lists = applicationRepository.findByAuthor(user);
+        List<ApplicationResponse> listsResponse= lists.stream()
                 .map(applicationMapper::toApplicationResponse)
                 .collect(Collectors.toList());
-        return lists;
+        return listsResponse;
     }
 
     @Override
-    public ApplicationResponse createApplication(ApplicationRequest applicationRequest,String token) {
-        String jwt = token.substring(7);
-        User user = jwtServiceImpl.getUserByToken(jwt);
+    @Transactional
+    public ApplicationResponse createApplication(ApplicationRequest applicationRequest) {
+        User user = userUtils.getCurrentUser();
+
         Pet pet = petRepository.findById(applicationRequest.getPetId())
                 .orElseThrow(()-> new RuntimeException("Pet not found"));
         Application application = Application.builder()
@@ -73,7 +79,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public ApplicationResponse userUpdateApplication(Long id,ApplicationRequest request) {
-        Pet pet = perService.findById(request.getPetId());
+        Pet pet = petService.findById(request.getPetId());
         Application application = findById(id);
         application.setPet(pet);
         applicationRepository.save(application);
@@ -90,6 +96,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public ApplicationResponse updateApplication(Long id, ApplicationUpdateRequest request) {
         Application application = findById(id);
-
+        applicationMapper.updateApplicationFromTarget(request,application);
+        applicationRepository.save(application);
+        return applicationMapper.toApplicationResponse(application);
     }
+
+
+
 }

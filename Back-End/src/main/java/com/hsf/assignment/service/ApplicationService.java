@@ -15,9 +15,9 @@ public interface ApplicationService {
 
     List<Application> findAll();
 
-    ApplicationResponse createApplication(ApplicationRequest applicationRequest,String token);
+    ApplicationResponse createApplication(ApplicationRequest applicationRequest);
 
-    List<ApplicationResponse> getByUser(String token);
+    List<ApplicationResponse> getByUser();
 
     ApplicationResponse userUpdateApplication(Long id,ApplicationRequest request);
 

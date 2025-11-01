@@ -11,6 +11,8 @@ import com.hsf.assignment.repository.UserRepository;
 import com.hsf.assignment.service.AuthService;
 import com.hsf.assignment.service.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -60,9 +62,11 @@ public class AuthServiceImpl implements AuthService {
 
         String accessToken = jwtService.generateToken(user);
         LoginResponse response = userMapper.toLoginResponse(user);
-//        response.setToken(accessToken);
+        response.setToken(accessToken);
         userRepository.save(user);
 
         return response;
     }
+
+
 }
