@@ -1,12 +1,8 @@
 package com.hsf.assignment.dto.response;
 
 import com.hsf.assignment.Enum.ApplicationStatus;
-import com.hsf.assignment.entity.Pet;
-import com.hsf.assignment.entity.User;
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 
@@ -16,8 +12,11 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApplicationResponse {
-    PetResponse petResponse;
+    Long applicationId;
+    PetResponse pet;
+    String applicationContent;
     ApplicationStatus status;
     LocalDateTime createdAt;
-    User receiver;
+    UserResponse author;
+    UserResponse receiver;
 }

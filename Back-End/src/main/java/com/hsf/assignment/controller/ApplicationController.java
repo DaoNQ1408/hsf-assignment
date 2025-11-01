@@ -1,82 +1,52 @@
 package com.hsf.assignment.controller;
 
 import com.hsf.assignment.dto.request.ApplicationRequest;
-import com.hsf.assignment.dto.request.ApplicationUpdateRequest;
 import com.hsf.assignment.dto.response.ApplicationResponse;
 import com.hsf.assignment.service.ApplicationService;
-import com.hsf.assignment.service.impl.ApplicationServiceImpl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/application")
 @RestController
+@RequestMapping("/api/application")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ApplicationController {
 
     ApplicationService applicationService;
 
-    @GetMapping("/user")
-    public ResponseEntity<List<ApplicationResponse>> getByUser(
-    ){
-        List<ApplicationResponse> response = applicationService.getByUser();
-        return ResponseEntity.ok(response);
-    }
 
-    @PostMapping("/user")
-    @PreAuthorize("hasAnyAuthority('USER')")
-    public ResponseEntity<ApplicationResponse> createApplication(
-            @RequestBody ApplicationRequest applicationRequest
-            ){
-        ApplicationResponse response = applicationService.createApplication(applicationRequest);
-        return ResponseEntity.ok(response);
-    }
-
-    @PutMapping("/user/{id}")
-    public ResponseEntity<ApplicationResponse> updateApplication(
-            @PathVariable Long id,
-            @RequestBody ApplicationRequest request
-            ){
-        ApplicationResponse response = applicationService.userUpdateApplication(id,request);
-        return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping("/user/{id}")
-    public ResponseEntity<String> deleteApplication(
-            @PathVariable Long id
-            ){
-        String response = applicationService.deleteApplication(id);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping()
-    public ResponseEntity<List<ApplicationResponse>> getAllApplications(){
-        List<ApplicationResponse> response = applicationService.getAll();
-        return ResponseEntity.ok(response);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ApplicationResponse> updateApplication(
-            @PathVariable Long id,
-            @RequestBody ApplicationUpdateRequest request
-    ){
-        ApplicationResponse response = applicationService.updateApplication(id,request);
+    @PostMapping("/create")
+    public ResponseEntity<ApplicationResponse> createApplication(@RequestBody ApplicationRequest request) {
+        ApplicationResponse response = applicationService.createApplication(request);
         return ResponseEntity.ok(response);
     }
 
 
+    @GetMapping("/by-author")
+    public ResponseEntity<List<ApplicationResponse>> getByAuthor() {
+        return ResponseEntity.ok(applicationService.getByAuthor());
+    }
 
 
+    @GetMapping("/by-receiver")
+    public ResponseEntity<List<ApplicationResponse>> getByReceiver() {
+        return ResponseEntity.ok(applicationService.getByReceiver());
+    }
 
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ApplicationResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(applicationService.findResponseById(id));
+    }
 
 
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApplicationResponse> deleteApplication(@PathVariable Long id) {
+        return ResponseEntity.ok(applicationService.deleteApplication(id));
+    }
 }

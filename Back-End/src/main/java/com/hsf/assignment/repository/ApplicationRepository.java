@@ -10,6 +10,8 @@ import java.util.List;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application,Long> {
-    List<Application> findByAuthor(User user);
+    List<Application> findByAuthor(User author);
+
+    List<Application> findByReceiver(User receiver);
 
 }

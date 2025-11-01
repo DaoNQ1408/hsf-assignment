@@ -5,7 +5,6 @@ import com.hsf.assignment.dto.response.ImageResponse;
 import com.hsf.assignment.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -19,10 +18,10 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping(value = "/upload", consumes = {"multipart/form-data"})
-    public ResponseEntity<ImageResponse> upload(@ModelAttribute ImageRequest imageRequest)
+    public ResponseEntity<ImageResponse> upload(@RequestBody ImageRequest imageRequest)
 //            , @AuthenticationPrincipal UserDetails userDetails)
     {
-       ImageResponse imageResponse = imageService.uploadImage(imageRequest);
+       ImageResponse imageResponse = imageService.uploadUserImage(imageRequest);
        return ResponseEntity.ok(imageResponse);
     }
     @GetMapping

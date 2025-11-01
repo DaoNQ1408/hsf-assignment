@@ -2,6 +2,7 @@ package com.hsf.assignment.mapper;
 import com.hsf.assignment.dto.request.RegisterRequest;
 import com.hsf.assignment.dto.response.LoginResponse;
 import com.hsf.assignment.dto.response.RegisterResponse;
+import com.hsf.assignment.dto.response.UserResponse;
 import com.hsf.assignment.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -24,4 +25,6 @@ public interface UserMapper {
 
     @Mapping(target = "token", ignore = true)
     LoginResponse toLoginResponse(User user);
+
+    UserResponse toUserResponse(User user);
 }
