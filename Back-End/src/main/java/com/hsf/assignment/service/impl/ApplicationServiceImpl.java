@@ -31,7 +31,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     ApplicationRepository applicationRepository;
     PetService petService;
     UserUtils userUtils;
-    private final ApplicationService applicationService;
+
 
 
     @Override
@@ -104,6 +104,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     public ApplicationResponse updateUserApplication(Long id,ApplicationRequest request) {
         Pet pet = petService.findById(request.getPetId());
         Application application = findById(id);
+        application.setApplicationContent(request.getApplicationContent());
         application.setPet(pet);
         applicationRepository.save(application);
         return applicationMapper.toApplicationResponse(application);
@@ -121,8 +122,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<ApplicationResponse> getAllNotUser(Long id) {
-        return applicationRepository.findByAuthorUserIdNot(id).stream()
+    public List<ApplicationResponse> getAllNotUser() {
+        User user = userUtils.getCurrentUser();
+        return applicationRepository.findByAuthorUserIdNot(user.getUserId()).stream()
                 .map(applicationMapper::toApplicationResponse)
                 .collect(Collectors.toList());
     }

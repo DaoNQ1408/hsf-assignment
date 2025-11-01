@@ -72,7 +72,7 @@ public class ApplicationController {
     }
 
     @GetMapping("except-user")
-    public ResponseEntity<List<ApplicationResponse>> getAllExceptUser(@RequestParam Long id) {
-        return ResponseEntity.ok(applicationService.getAllNotUser(id));
+    public ResponseEntity<List<ApplicationResponse>> getAllExceptUser() {
+        return ResponseEntity.ok(applicationService.getAllNotUser());
     }
 }

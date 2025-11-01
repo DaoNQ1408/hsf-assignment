@@ -18,7 +18,7 @@ public interface ApplicationService {
     ApplicationResponse updateUserApplication(Long applicationId, ApplicationRequest applicationRequest);
     ApplicationResponse deleteApplication(Long applicationId);
 
-    List<ApplicationResponse> getAllNotUser(Long id);
+    List<ApplicationResponse> getAllNotUser();
     List<ApplicationResponse> getAll();
 
     ApplicationResponse updateApplication(Long id ,ApplicationUpdateRequest request);
