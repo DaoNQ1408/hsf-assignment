@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,12 +34,54 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 
     @Override
-    public List<ApplicationResponse> getByUser() {
-        User user = userUtils.getCurrentUser();
-        List<Application> list = applicationRepository.findByAuthor(user);
-        List<ApplicationResponse> lists = new ArrayList<>();
+    public List<ApplicationResponse> getByAuthor() {
+        User author = userUtils.getCurrentUser();
 
-        return lists;
+        List<Application> list = applicationRepository.findByAuthor(author);
+
+        return list.stream()
+                .map(applicationMapper::toApplicationResponse)
+                .toList();
+    }
+
+    @Override
+    public List<ApplicationResponse> getByReceiver() {
+        User receiver = userUtils.getCurrentUser();
+
+        List<Application> list = applicationRepository.findByReceiver(receiver);
+
+        return list.stream()
+                .map(applicationMapper::toApplicationResponse)
+                .toList();
+    }
+
+    @Override
+    public Application findById(Long applicationId) {
+        return applicationRepository.findById(applicationId)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Application not found with id: " +
+                                        applicationId)
+                );
+    }
+
+    @Override
+    public ApplicationResponse findResponseById(Long applicationId) {
+        return applicationMapper.toApplicationResponse(findById(applicationId));
+    }
+
+    @Override
+    public ApplicationResponse updateApplication(Long applicationId, ApplicationRequest applicationRequest) {
+        return null;
+    }
+
+    @Override
+    public ApplicationResponse deleteApplication(Long applicationId) {
+        Application application = findById(applicationId);
+
+        applicationRepository.delete(application);
+
+        return applicationMapper.toApplicationResponse(application);
     }
 
     @Override

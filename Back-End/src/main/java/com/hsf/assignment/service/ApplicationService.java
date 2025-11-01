@@ -9,9 +9,12 @@ import java.util.List;
 
 @Service
 public interface ApplicationService {
-    public ApplicationResponse createApplication(ApplicationRequest applicationRequest);
+    ApplicationResponse createApplication(ApplicationRequest applicationRequest);
+    List<ApplicationResponse> getByAuthor();
+    List<ApplicationResponse> getByReceiver();
+    Application findById(Long applicationId);
+    ApplicationResponse findResponseById(Long applicationId);
+    ApplicationResponse updateApplication(Long applicationId, ApplicationRequest applicationRequest);
+    ApplicationResponse deleteApplication(Long applicationId);
 
-    List<ApplicationResponse> getByUser();
-
-//    ApplicationResponse getByUser(String token);
 }
