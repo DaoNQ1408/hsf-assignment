@@ -1,6 +1,7 @@
 package com.hsf.assignment.controller;
 
 import com.hsf.assignment.dto.request.ApplicationRequest;
+import com.hsf.assignment.dto.request.ApplicationUpdateRequest;
 import com.hsf.assignment.dto.response.ApplicationResponse;
 import com.hsf.assignment.service.impl.ApplicationServiceImpl;
 import lombok.AccessLevel;
@@ -20,12 +21,8 @@ public class ApplicationController {
 
     ApplicationServiceImpl applicationServiceImpl;
 
-//    @GetMapping()
-//    public ResponseEntity<List<ApplicationResponse>> getApplication(){
-//        Li
-//    }
 
-    @GetMapping("/forUser")
+    @GetMapping("/user")
     public ResponseEntity<List<ApplicationResponse>> getByUser(
             @RequestHeader("Authorization") String token
     ){
@@ -33,8 +30,7 @@ public class ApplicationController {
         return ResponseEntity.ok(response);
     }
 
-
-    @PostMapping("/create")
+    @PostMapping("/user")
     public ResponseEntity<ApplicationResponse> createApplication(
             @RequestBody ApplicationRequest applicationRequest,
             @RequestHeader("Authorization") String token
@@ -43,6 +39,38 @@ public class ApplicationController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/user/{id}")
+    public ResponseEntity<ApplicationResponse> updateApplication(
+            @PathVariable Long id,
+            @RequestBody ApplicationRequest request
+            ){
+        ApplicationResponse response = applicationServiceImpl.userUpdateApplication(id,request);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<String> deleteApplication(
+            @PathVariable Long id
+            ){
+        String response = applicationServiceImpl.deleteApplication(id);
+        return ResponseEntity.ok(response);
+    }
+
+
+//    @GetMapping
+//    @PostMapping
+    @PutMapping("/{id}")
+    public ResponseEntity<ApplicationResponse> updateApplication(
+            @PathVariable Long id,
+            @RequestBody ApplicationUpdateRequest request
+    ){
+        ApplicationResponse response = applicationServiceImpl.updateApplication(id,request);
+        return ResponseEntity.ok(response);
+    }
+
+
+
+//    @PostMapping
 
 
 
