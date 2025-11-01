@@ -19,7 +19,6 @@ import org.mapstruct.ReportingPolicy;
 public interface ApplicationMapper {
 
     @Mapping(target = "receiver", ignore = true)
-    @Mapping(target = "author", source = "authorId")
     @Mapping(target = "pet", source = "petId")
     Application toApplication(ApplicationRequest applicationRequest);
 

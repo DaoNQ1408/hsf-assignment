@@ -1,7 +1,6 @@
 package com.hsf.assignment.dto.response;
 
 import com.hsf.assignment.Enum.ApplicationStatus;
-import com.hsf.assignment.entity.Pet;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

@@ -87,20 +87,16 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     @Transactional
     public ApplicationResponse createApplication(ApplicationRequest applicationRequest) {
-        User user = userUtils.getCurrentUser();
+        User author = userUtils.getCurrentUser();
 
         Pet pet = petRepository.findById(applicationRequest.getPetId())
                 .orElseThrow(()-> new RuntimeException("Pet not found"));
-        Application application = Application.builder()
-                        .receiver(user)
-                        .status(ApplicationStatus.AVAILABLE)
-                        .pet(pet)
-                        .build();
 
-         application = applicationMapper.toApplication(applicationRequest);
+        Application application = applicationMapper.toApplication(applicationRequest);
+        application.setAuthor(author);
 
-         applicationRepository.save(application);
+        applicationRepository.save(application);
 
-         return applicationMapper.toApplicationResponse(application);
+        return applicationMapper.toApplicationResponse(application);
     }
 }
