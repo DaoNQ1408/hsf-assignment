@@ -8,8 +8,8 @@ import com.hsf.assignment.entity.Pet;
 import com.hsf.assignment.entity.User;
 import com.hsf.assignment.mapper.ApplicationMapper;
 import com.hsf.assignment.repository.ApplicationRepository;
-import com.hsf.assignment.repository.PetRepository;
 import com.hsf.assignment.service.ApplicationService;
+import com.hsf.assignment.service.PetService;
 import com.hsf.assignment.utils.UserUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +17,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +27,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     ApplicationMapper applicationMapper;
     ApplicationRepository applicationRepository;
-    PetRepository petRepository;
+    PetService petService;
     UserUtils userUtils;
 
 
@@ -44,6 +42,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .toList();
     }
 
+
     @Override
     public List<ApplicationResponse> getByReceiver() {
         User receiver = userUtils.getCurrentUser();
@@ -55,6 +54,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .toList();
     }
 
+
     @Override
     public Application findById(Long applicationId) {
         return applicationRepository.findById(applicationId)
@@ -65,17 +65,15 @@ public class ApplicationServiceImpl implements ApplicationService {
                 );
     }
 
+
     @Override
     public ApplicationResponse findResponseById(Long applicationId) {
         return applicationMapper.toApplicationResponse(findById(applicationId));
     }
 
-    @Override
-    public ApplicationResponse updateApplication(Long applicationId, ApplicationRequest applicationRequest) {
-        return null;
-    }
 
     @Override
+    @Transactional
     public ApplicationResponse deleteApplication(Long applicationId) {
         Application application = findById(applicationId);
 
@@ -89,14 +87,21 @@ public class ApplicationServiceImpl implements ApplicationService {
     public ApplicationResponse createApplication(ApplicationRequest applicationRequest) {
         User author = userUtils.getCurrentUser();
 
-        Pet pet = petRepository.findById(applicationRequest.getPetId())
-                .orElseThrow(()-> new RuntimeException("Pet not found"));
-
-        Application application = applicationMapper.toApplication(applicationRequest);
+        Application application =  applicationMapper.toApplication(applicationRequest);
         application.setAuthor(author);
 
         applicationRepository.save(application);
 
+        return applicationMapper.toApplicationResponse(application);
+    }
+
+    @Override
+    @Transactional
+    public ApplicationResponse updateApplication(Long id,ApplicationRequest request) {
+        Pet pet = petService.findById(request.getPetId());
+        Application application = findById(id);
+        application.setPet(pet);
+        applicationRepository.save(application);
         return applicationMapper.toApplicationResponse(application);
     }
 }

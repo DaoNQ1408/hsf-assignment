@@ -12,9 +12,8 @@ public interface ApplicationService {
     ApplicationResponse createApplication(ApplicationRequest applicationRequest);
     List<ApplicationResponse> getByAuthor();
     List<ApplicationResponse> getByReceiver();
-    Application findById(Long applicationId);
+    Application findById (Long applicationId);
     ApplicationResponse findResponseById(Long applicationId);
     ApplicationResponse updateApplication(Long applicationId, ApplicationRequest applicationRequest);
     ApplicationResponse deleteApplication(Long applicationId);
-
 }
