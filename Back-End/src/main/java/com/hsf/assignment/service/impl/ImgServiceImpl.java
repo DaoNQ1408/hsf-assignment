@@ -7,6 +7,7 @@ import com.hsf.assignment.entity.Pet;
 import com.hsf.assignment.entity.User;
 import com.hsf.assignment.mapper.ImageMapper;
 import com.hsf.assignment.repository.ImageRepository;
+import com.hsf.assignment.repository.PetRepository;
 import com.hsf.assignment.service.ImageService;
 import com.hsf.assignment.service.PetService;
 import com.hsf.assignment.utils.UserUtils;
@@ -26,7 +27,7 @@ public class ImgServiceImpl implements ImageService {
     private final ImageRepository imageRepo;
     private final ImageMapper imageMapper;
     private final UserUtils userUtils;
-    private final PetService petService;
+    private final PetRepository petRepo;
 
 
     @Override
@@ -98,26 +99,24 @@ public class ImgServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public List<ImageResponse> uploadPetImages(List<ImageRequest> requests, Long petId) {
-        List<ImageResponse> imageResponses = new ArrayList<>();
-
+    public List<ImageResponse> uploadPetImages(List<ImageRequest> requests, Pet pet) {
+        List<Image> images = new ArrayList<>();
         for (ImageRequest request : requests) {
-            ImageResponse response = uploadPetImage(request, petId);
-            imageResponses.add(response);
+            Image image = uploadPetImage(request, pet);
+            images.add(image);
         }
-
-        return imageResponses;
+        pet.setImages(images);
+        petRepo.save(pet);
+        return imageMapper.toResponseList(images);
     }
 
 
     @Transactional
-    public ImageResponse uploadPetImage(ImageRequest request, Long petId) {
+    public Image uploadPetImage(ImageRequest request, Pet pet) {
         try {
-            Pet pet = petService.findById(petId);
             Image image = imageMapper.toPetImageEntity(request);
             image.setPet(pet);
-            imageRepo.save(image);
-            return imageMapper.toResponse(image);
+            return imageRepo.save(image);
         } catch (Exception e) {
             throw new RuntimeException("Lỗi lưu metadata ảnh: " + e.getMessage());
         }

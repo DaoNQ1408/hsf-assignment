@@ -23,16 +23,11 @@ public interface ImageMapper {
 
     List<ImageResponse> toResponseList(List<Image> images);
 
-    @Mapping(target = "user", source = "userId" , qualifiedByName = "mapUserFromId")
+    @Mapping(target = "user", ignore = true)
     @Mapping(target = "pet", ignore = true)
     @Mapping(target = "imageId", ignore = true)
+    @Mapping(target = "imageType", ignore = true)
     @Mapping(target = "isDeleted", constant = "false")
-    @Mapping(target = "imageUrl", source = "imageUrl")
-    Image toEntity(ImageRequest request);
-
-    @Mapping(target = "pet", ignore = true)
-    @Mapping(target = "user",source = "userId", qualifiedByName = "mapUserFromId")
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromRequest(ImageRequest request, @MappingTarget Image image);
 
     @Mapping(target = "user", ignore = true)
@@ -48,5 +43,9 @@ public interface ImageMapper {
     @Mapping(target = "isDeleted", constant = "false")
     @Mapping(target = "imageType", constant = "PET")
     Image toPetImageEntity(ImageRequest request);
+
+    default String toImageUrl(Image image) {
+        return image != null ? image.getImageUrl() : null;
+    }
 
 }
