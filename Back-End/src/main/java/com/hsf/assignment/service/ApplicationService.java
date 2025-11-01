@@ -1,6 +1,7 @@
 package com.hsf.assignment.service;
 
 import com.hsf.assignment.dto.request.ApplicationRequest;
+import com.hsf.assignment.dto.request.ApplicationUpdateRequest;
 import com.hsf.assignment.dto.response.ApplicationResponse;
 import com.hsf.assignment.entity.Application;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,11 @@ public interface ApplicationService {
     List<ApplicationResponse> getByReceiver();
     Application findById (Long applicationId);
     ApplicationResponse findResponseById(Long applicationId);
-    ApplicationResponse updateApplication(Long applicationId, ApplicationRequest applicationRequest);
+    ApplicationResponse updateUserApplication(Long applicationId, ApplicationRequest applicationRequest);
     ApplicationResponse deleteApplication(Long applicationId);
+
+    List<ApplicationResponse> getAllNotUser();
+    List<ApplicationResponse> getAll();
+
+    ApplicationResponse updateApplication(Long id ,ApplicationUpdateRequest request);
 }
