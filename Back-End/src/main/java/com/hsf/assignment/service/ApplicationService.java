@@ -24,4 +24,6 @@ public interface ApplicationService {
     String deleteApplication(Long id);
 
     ApplicationResponse updateApplication(Long id, ApplicationUpdateRequest request);
+
+    List<ApplicationResponse> getAll();
 }

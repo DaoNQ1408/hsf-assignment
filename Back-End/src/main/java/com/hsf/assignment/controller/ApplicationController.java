@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/application")
 @RestController
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class ApplicationController {
 
     ApplicationService applicationService;
@@ -56,6 +56,12 @@ public class ApplicationController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping()
+    public ResponseEntity<List<ApplicationResponse>> getAllApplications(){
+        List<ApplicationResponse> response = applicationService.getAll();
+        return ResponseEntity.ok(response);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ApplicationResponse> updateApplication(
             @PathVariable Long id,
@@ -64,6 +70,8 @@ public class ApplicationController {
         ApplicationResponse response = applicationService.updateApplication(id,request);
         return ResponseEntity.ok(response);
     }
+
+
 
 
 

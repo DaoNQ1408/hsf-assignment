@@ -31,8 +31,6 @@ import java.util.stream.Collectors;
 public class ApplicationServiceImpl implements ApplicationService {
     ApplicationMapper applicationMapper;
     ApplicationRepository applicationRepository;
-    JwtServiceImpl  jwtServiceImpl;
-    PetRepository petRepository;
     PetService petService;
     UserUtils userUtils;
 
@@ -62,15 +60,13 @@ public class ApplicationServiceImpl implements ApplicationService {
     public ApplicationResponse createApplication(ApplicationRequest applicationRequest) {
         User user = userUtils.getCurrentUser();
 
-        Pet pet = petRepository.findById(applicationRequest.getPetId())
-                .orElseThrow(()-> new RuntimeException("Pet not found"));
+        Pet pet = petService.findById(applicationRequest.getPetId());
+
         Application application = Application.builder()
-                        .receiver(user)
+                        .author(user)
                         .status(ApplicationStatus.AVAILABLE)
                         .pet(pet)
                         .build();
-
-         application = applicationMapper.toApplication(applicationRequest);
 
          applicationRepository.save(application);
 
@@ -101,6 +97,10 @@ public class ApplicationServiceImpl implements ApplicationService {
         return applicationMapper.toApplicationResponse(application);
     }
 
-
-
+    @Override
+    public List<ApplicationResponse> getAll() {
+        return applicationRepository.findAll().stream()
+                .map(applicationMapper::toApplicationResponse)
+                .collect(Collectors.toList());
+    }
 }
