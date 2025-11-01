@@ -34,7 +34,7 @@ public class ImgServiceImpl implements ImageService {
     public ImageResponse uploadImage(ImageRequest request) {
         try {
             User user = userRepo.findByUserId(request.getUserId());
-             Image image = imageMapper.toEntity(request);
+            Image image = imageMapper.toEntity(request);
             image.setUser(user);
             imageRepo.save(image);
             return imageMapper.toResponse(image);

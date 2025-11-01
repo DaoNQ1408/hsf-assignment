@@ -1,7 +1,10 @@
 package com.hsf.assignment.dto.request;
 
+import com.hsf.assignment.Enum.PetSpecies;
 import lombok.Data;
 import lombok.NonNull;
+
+import java.util.List;
 
 @Data
 public class PetRequest {
@@ -14,9 +17,10 @@ public class PetRequest {
     @NonNull
     private int height;
 
-    private String species;
+    private PetSpecies species;
     @NonNull
     private String sex;
     private String description;
     private Boolean vaccination;
+    private List<ImageRequest> images;
 }

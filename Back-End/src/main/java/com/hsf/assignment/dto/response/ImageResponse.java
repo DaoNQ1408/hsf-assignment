@@ -1,5 +1,6 @@
 package com.hsf.assignment.dto.response;
 
+import com.hsf.assignment.Enum.ImageType;
 import com.hsf.assignment.Enum.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +14,7 @@ import lombok.NoArgsConstructor;
 public class ImageResponse {
     private Long imageId;
     private String imageUrl;
-    private UserRole role;
-    private String imageType;
+    private ImageType imageType;
     private Long petId;
     private Long userId;
 }

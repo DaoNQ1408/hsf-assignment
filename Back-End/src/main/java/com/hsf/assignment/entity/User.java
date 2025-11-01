@@ -57,6 +57,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author")
     private List<Application> receiverApplications;
 
+    @OneToMany(mappedBy = "user")
+    private List<Image> images;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private UserStatus status;

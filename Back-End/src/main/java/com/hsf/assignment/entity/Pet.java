@@ -1,5 +1,6 @@
 package com.hsf.assignment.entity;
 
+import com.hsf.assignment.Enum.PetSpecies;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,7 +33,7 @@ public class Pet {
     private int height;
 
     @Column(name = "species")
-    private String species;
+    private PetSpecies species;
 
     @Column(name = "sex")
     private String sex;

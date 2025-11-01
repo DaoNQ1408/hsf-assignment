@@ -28,7 +28,7 @@ public class Application {
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_Id")
+    @JoinColumn(name = "author_id")
     private User author;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,6 +38,10 @@ public class Application {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id")
     private User receiver;
+
+    @Lob
+    @Column(name = "application_content", columnDefinition = "TEXT")
+    private String applicationContent;
 
     @PrePersist
     protected void onCreate() {

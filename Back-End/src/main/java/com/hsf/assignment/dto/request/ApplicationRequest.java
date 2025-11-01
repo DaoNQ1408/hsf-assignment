@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApplicationRequest {
+    Long authorId;
     Long petId;
-    String information;
+    String applicationContent;
 }

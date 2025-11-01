@@ -19,7 +19,7 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping(value = "/upload", consumes = {"multipart/form-data"})
-    public ResponseEntity<ImageResponse> upload(@ModelAttribute ImageRequest imageRequest)
+    public ResponseEntity<ImageResponse> upload(@RequestBody ImageRequest imageRequest)
 //            , @AuthenticationPrincipal UserDetails userDetails)
     {
        ImageResponse imageResponse = imageService.uploadImage(imageRequest);

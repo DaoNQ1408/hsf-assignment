@@ -23,13 +23,10 @@ public interface ImageMapper {
     @Mapping(target = "imageId", ignore = true)
     @Mapping(target = "isDeleted", constant = "false")
     @Mapping(target = "imageUrl", source = "imageUrl")
-    @Mapping(target = "imageType", constant = "image")
-    @Mapping(target = "role", qualifiedByName = "mapRole")
     Image toEntity(ImageRequest request);
 
     @Mapping(target = "pet", ignore = true)
     @Mapping(target = "user",source = "userId", qualifiedByName = "mapUserFromId")
-    @Mapping(target = "role", qualifiedByName = "mapRole")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromRequest(ImageRequest request, @MappingTarget Image image);
 
@@ -37,6 +34,7 @@ public interface ImageMapper {
     default UserRole mapRole (String role) {
         return role != null ? UserRole.valueOf(role.toUpperCase()) : null;
     }
+
     @Named("mapUserFromId")
     default User mapUserFromId(Long userId) {
         if (userId == null) return null;
@@ -44,9 +42,5 @@ public interface ImageMapper {
         user.setUserId(userId);
         return user;
     }
-
-
-
-
 
 }
