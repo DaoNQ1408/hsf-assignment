@@ -4,12 +4,17 @@ import com.hsf.assignment.dto.request.ImageRequest;
 import com.hsf.assignment.dto.response.ImageResponse;
 import com.hsf.assignment.entity.Image;
 import com.hsf.assignment.entity.User;
+import com.hsf.assignment.service.AccountService;
+import com.hsf.assignment.service.PetService;
 import org.mapstruct.*;
 
 
 import java.util.List;
 
-@Mapper (componentModel = "spring")
+@Mapper (componentModel = "spring",
+        uses = {PetService.class,
+                AccountService.class},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ImageMapper {
 
     @Mapping(source = "user.userId", target = "userId")
@@ -30,17 +35,18 @@ public interface ImageMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromRequest(ImageRequest request, @MappingTarget Image image);
 
-    @Named("mapRole")
-    default UserRole mapRole (String role) {
-        return role != null ? UserRole.valueOf(role.toUpperCase()) : null;
-    }
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "pet", ignore = true)
+    @Mapping(target = "imageId", ignore = true)
+    @Mapping(target = "isDeleted", constant = "false")
+    @Mapping(target = "imageType", constant = "USER")
+    Image toUserImageEntity(ImageRequest request);
 
-    @Named("mapUserFromId")
-    default User mapUserFromId(Long userId) {
-        if (userId == null) return null;
-        User user = new User();
-        user.setUserId(userId);
-        return user;
-    }
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "pet", ignore = true)
+    @Mapping(target = "imageId", ignore = true)
+    @Mapping(target = "isDeleted", constant = "false")
+    @Mapping(target = "imageType", constant = "PET")
+    Image toPetImageEntity(ImageRequest request);
 
 }

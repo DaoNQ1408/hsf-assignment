@@ -5,6 +5,7 @@ import com.hsf.assignment.dto.response.PetResponse;
 import com.hsf.assignment.entity.Pet;
 import com.hsf.assignment.repository.PetRepository;
 import com.hsf.assignment.service.PetService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,16 @@ public class PetServiceImpl implements PetService {
 
         Pet updated = petRepository.save(pet);
         return toResponse(updated);
+    }
+
+    @Override
+    public Pet findById(Long id) {
+        return petRepository.findById(id)
+                .orElseThrow(() ->
+                        new EntityNotFoundException(
+                                "Không tìm thấy thú cưng có id: " +
+                                        id)
+                );
     }
 
     @Override
