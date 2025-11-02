@@ -60,6 +60,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Image> images;
 
+    @OneToMany(mappedBy = "user")
+    private List<Pet> pets;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private UserStatus status;

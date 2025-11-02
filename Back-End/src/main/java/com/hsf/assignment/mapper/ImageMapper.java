@@ -1,4 +1,5 @@
 package com.hsf.assignment.mapper;
+import com.hsf.assignment.Enum.ImageType;
 import com.hsf.assignment.Enum.UserRole;
 import com.hsf.assignment.dto.request.ImageRequest;
 import com.hsf.assignment.dto.response.ImageResponse;
@@ -30,6 +31,8 @@ public interface ImageMapper {
     @Mapping(target = "isDeleted", constant = "false")
     void updateEntityFromRequest(ImageRequest request, @MappingTarget Image image);
 
+
+    @Named("toUserImageEntity")
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "pet", ignore = true)
     @Mapping(target = "imageId", ignore = true)
@@ -37,12 +40,28 @@ public interface ImageMapper {
     @Mapping(target = "imageType", constant = "USER")
     Image toUserImageEntity(ImageRequest request);
 
+
+//    @Named("toPetImageEntity")
+//    @Mapping(target = "user", ignore = true)
+//    @Mapping(target = "pet", ignore = true)
+//    @Mapping(target = "imageId", ignore = true)
+//    @Mapping(target = "isDeleted", constant = "false")
+//    @Mapping(target = "imageType", constant = "PET")
+//    Image toPetImageEntity(ImageRequest request);
+
+    @Named("toPetImageEntity")
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "pet", ignore = true)
     @Mapping(target = "imageId", ignore = true)
     @Mapping(target = "isDeleted", constant = "false")
     @Mapping(target = "imageType", constant = "PET")
-    Image toPetImageEntity(ImageRequest request);
+    default Image toPetImageEntity(String url) {
+        return Image.builder()
+                .imageUrl(url)
+                .isDeleted(false)
+                .imageType(ImageType.PET)
+                .build();
+    }
 
     default String toImageUrl(Image image) {
         return image != null ? image.getImageUrl() : null;

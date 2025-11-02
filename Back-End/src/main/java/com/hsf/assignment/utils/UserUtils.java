@@ -23,7 +23,6 @@ public class UserUtils implements ApplicationContextAware {
 
     public User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println(username);
         return userRepository.findByUsername(username).get();
     }
 

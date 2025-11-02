@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface PetService {
     List<PetResponse> getAll();
+    List<PetResponse> getMyPet();
     PetResponse getById(Long id);
     PetResponse create(PetRequest request);
     PetResponse update(Long id, PetRequest request);

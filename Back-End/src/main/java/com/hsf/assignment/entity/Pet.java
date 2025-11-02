@@ -1,5 +1,6 @@
 package com.hsf.assignment.entity;
 
+import com.hsf.assignment.Enum.PetSex;
 import com.hsf.assignment.Enum.PetSpecies;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,7 +37,8 @@ public class Pet {
     private PetSpecies species;
 
     @Column(name = "sex")
-    private String sex;
+    @Enumerated(EnumType.STRING)
+    private PetSex sex;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
@@ -44,7 +46,11 @@ public class Pet {
     @Column(name = "vaccination")
     private Boolean vaccination;
 
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
