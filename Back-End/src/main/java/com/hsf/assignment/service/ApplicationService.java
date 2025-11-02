@@ -22,4 +22,5 @@ public interface ApplicationService {
     List<ApplicationResponse> getAll();
 
     ApplicationResponse updateApplication(Long id ,ApplicationUpdateRequest request);
+    ApplicationResponse adoptedApplication(Long applicationId, Long receiverId);
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/application")
+@RequestMapping("/api/applications")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ApplicationController {
@@ -74,5 +74,11 @@ public class ApplicationController {
     @GetMapping("except-user")
     public ResponseEntity<List<ApplicationResponse>> getAllExceptUser() {
         return ResponseEntity.ok(applicationService.getAllNotUser());
+    }
+
+    @PutMapping("/adopted/{applicationId}/receiver/{receiverId}")
+    public ResponseEntity<ApplicationResponse> adoptedApplication(@PathVariable Long applicationId,
+                                                                  @PathVariable Long receiverId) {
+        return ResponseEntity.ok(applicationService.adoptedApplication(applicationId, receiverId));
     }
 }

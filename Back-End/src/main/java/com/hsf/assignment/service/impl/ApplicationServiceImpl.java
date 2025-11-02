@@ -9,6 +9,7 @@ import com.hsf.assignment.entity.Pet;
 import com.hsf.assignment.entity.User;
 import com.hsf.assignment.mapper.ApplicationMapper;
 import com.hsf.assignment.repository.ApplicationRepository;
+import com.hsf.assignment.service.AccountService;
 import com.hsf.assignment.service.ApplicationService;
 import com.hsf.assignment.service.PetService;
 import com.hsf.assignment.utils.UserUtils;
@@ -31,7 +32,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     ApplicationRepository applicationRepository;
     PetService petService;
     UserUtils userUtils;
-
+    AccountService accountService;
 
 
     @Override
@@ -92,7 +93,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         Application application =  applicationMapper.toApplication(applicationRequest);
         application.setAuthor(author);
-        application.setStatus(ApplicationStatus.PENDING);
+        application.setStatus(ApplicationStatus.AVAILABLE);
 
         applicationRepository.save(application);
 
@@ -134,6 +135,31 @@ public class ApplicationServiceImpl implements ApplicationService {
         return applicationRepository.findAll().stream()
                 .map(applicationMapper::toApplicationResponse)
                 .collect(Collectors.toList());
+    }
+
+
+    @Override
+    @Transactional
+    public ApplicationResponse adoptedApplication(Long applicationId, Long receiverId) {
+
+        User owner = userUtils.getCurrentUser();
+        Application application = findById(applicationId);
+        User adopter = accountService.findById(receiverId);
+
+        if(application.getAuthor() != owner) {
+            throw new RuntimeException("Only the author of the application can mark it as adopted.");
+        }
+
+        if(application.getStatus() == ApplicationStatus.ADOPTED) {
+            throw new RuntimeException("Application is already marked as adopted.");
+        }
+
+        application.setReceiver(adopter);
+        application.setStatus(ApplicationStatus.ADOPTED);
+
+        Application adoptedApplication = applicationRepository.save(application);
+
+        return applicationMapper.toApplicationResponse(adoptedApplication);
     }
 
 }
