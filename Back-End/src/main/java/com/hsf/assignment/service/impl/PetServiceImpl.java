@@ -3,10 +3,12 @@ package com.hsf.assignment.service.impl;
 import com.hsf.assignment.dto.request.PetRequest;
 import com.hsf.assignment.dto.response.PetResponse;
 import com.hsf.assignment.entity.Pet;
+import com.hsf.assignment.entity.User;
 import com.hsf.assignment.mapper.PetMapper;
 import com.hsf.assignment.repository.PetRepository;
 import com.hsf.assignment.service.ImageService;
 import com.hsf.assignment.service.PetService;
+import com.hsf.assignment.utils.UserUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class PetServiceImpl implements PetService {
     private final PetRepository petRepository;
     private final PetMapper petMapper;
     private final ImageService imageService;
+    private final UserUtils userUtils;
 
 
     @Override
@@ -45,9 +48,13 @@ public class PetServiceImpl implements PetService {
     @Override
     @Transactional
     public PetResponse create(PetRequest request) {
+
+        User user = userUtils.getCurrentUser();
+        request.setUserId(user.getUserId());
+
         Pet pet = petMapper.toEntity(request);
 
-        imageService.uploadPetImages(request.getImages(), pet);
+        imageService.uploadPetImages(request.getImageUrls(), pet);
         Pet saved = petRepository.save(pet);
 
         return petMapper.toResponse(saved);
@@ -61,6 +68,7 @@ public class PetServiceImpl implements PetService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy thú cưng có id: " + id));
 
         petMapper.updateEntityFromRequest(pet, request);
+        imageService.uploadPetImages(request.getImageUrls(), pet);
 
         Pet updated = petRepository.save(pet);
 
@@ -86,5 +94,14 @@ public class PetServiceImpl implements PetService {
             throw new RuntimeException("Không tìm thấy thú cưng có id: " + id);
         }
         petRepository.deleteById(id);
+    }
+
+
+    @Override
+    public List<PetResponse> getMyPet() {
+        User owner = userUtils.getCurrentUser();
+        return petRepository.findByUser(owner).stream()
+                .map(petMapper::toResponse)
+                .toList();
     }
 }

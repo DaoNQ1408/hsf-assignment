@@ -32,10 +32,11 @@ public class ImgServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public ImageResponse uploadUserImage(ImageRequest request) {
+    public ImageResponse uploadUserImage(String url) {
         try {
             User user = userUtils.getCurrentUser();
-            Image image = imageMapper.toUserImageEntity(request);
+            ImageRequest imageRequest = new ImageRequest(url);
+            Image image = imageMapper.toUserImageEntity(imageRequest);
             image.setUser(user);
             imageRepo.save(image);
             return imageMapper.toResponse(image);
@@ -99,24 +100,32 @@ public class ImgServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public List<ImageResponse> uploadPetImages(List<ImageRequest> requests, Pet pet) {
-        List<Image> images = new ArrayList<>();
-        for (ImageRequest request : requests) {
-            Image image = uploadPetImage(request, pet);
-            images.add(image);
+    public List<ImageResponse> uploadPetImages(List<String> urls, Pet pet) {
+
+        List<Image> newImages = new ArrayList<>();
+
+        for (String url : urls) {
+            Image image = uploadPetImage(url, pet);
+            newImages.add(image);
         }
-        pet.setImages(images);
-        petRepo.save(pet);
-        return imageMapper.toResponseList(images);
+
+        if (pet.getImages() == null) {
+            pet.setImages(new ArrayList<>());
+        } else {
+            pet.getImages().clear();
+        }
+        pet.getImages().addAll(newImages);
+
+        return imageMapper.toResponseList(newImages);
     }
 
 
     @Transactional
-    public Image uploadPetImage(ImageRequest request, Pet pet) {
+    public Image uploadPetImage(String url, Pet pet) {
         try {
-            Image image = imageMapper.toPetImageEntity(request);
+            Image image = imageMapper.toPetImageEntity(url);
             image.setPet(pet);
-            return imageRepo.save(image);
+            return image;
         } catch (Exception e) {
             throw new RuntimeException("Lỗi lưu metadata ảnh: " + e.getMessage());
         }

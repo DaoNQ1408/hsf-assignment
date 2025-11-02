@@ -17,4 +17,5 @@ public class PetResponse {
     private String description;
     private Boolean vaccination;
     private List<String> imageUrls;
+    private Long ownerId;
 }

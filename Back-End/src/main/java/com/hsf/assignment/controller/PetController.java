@@ -26,6 +26,11 @@ public class PetController {
         return ResponseEntity.ok(petService.getById(id));
     }
 
+    @GetMapping("/my-pets")
+    public ResponseEntity<List<PetResponse>> getMyPets() {
+        return ResponseEntity.ok(petService.getMyPet());
+    }
+
     @PostMapping
     public ResponseEntity<PetResponse> createPet(@RequestBody PetRequest request) {
         return ResponseEntity.ok(petService.create(request));

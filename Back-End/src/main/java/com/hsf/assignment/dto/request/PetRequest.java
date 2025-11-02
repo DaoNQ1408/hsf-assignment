@@ -1,5 +1,6 @@
 package com.hsf.assignment.dto.request;
 
+import com.hsf.assignment.Enum.PetSex;
 import com.hsf.assignment.Enum.PetSpecies;
 import lombok.Data;
 import lombok.NonNull;
@@ -19,8 +20,9 @@ public class PetRequest {
 
     private PetSpecies species;
     @NonNull
-    private String sex;
+    private PetSex sex;
     private String description;
     private Boolean vaccination;
-    private List<ImageRequest> images;
+    private List<String> imageUrls;
+    private Long userId;
 }
