@@ -51,7 +51,7 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.deleteApplication(id));
     }
 
-    @PutMapping("/by-user/{id}")
+    @PutMapping("/by-author/{id}")
     public ResponseEntity<ApplicationResponse> updateUserApplication(
             @PathVariable Long id,
             @RequestBody ApplicationRequest request) {
