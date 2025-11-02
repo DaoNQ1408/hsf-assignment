@@ -23,4 +23,5 @@ public interface ApplicationService {
 
     ApplicationResponse updateApplication(Long id ,ApplicationUpdateRequest request);
     ApplicationResponse adoptedApplication(Long applicationId, Long receiverId);
+    ApplicationResponse hideApplication(Long applicationId);
 }

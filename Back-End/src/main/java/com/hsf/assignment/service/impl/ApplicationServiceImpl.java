@@ -162,4 +162,16 @@ public class ApplicationServiceImpl implements ApplicationService {
         return applicationMapper.toApplicationResponse(adoptedApplication);
     }
 
+    @Override
+    @Transactional
+    public ApplicationResponse hideApplication(Long applicationId) {
+
+        Application application = findById(applicationId);
+
+        application.setStatus(ApplicationStatus.HIDDEN);
+        Application hiddenApplication = applicationRepository.save(application);
+
+        return applicationMapper.toApplicationResponse(hiddenApplication);
+    }
+
 }
