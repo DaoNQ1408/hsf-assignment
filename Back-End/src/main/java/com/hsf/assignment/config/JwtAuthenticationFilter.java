@@ -1,6 +1,5 @@
 package com.hsf.assignment.config;
 
-import com.cloudinary.provisioning.Account;
 import com.hsf.assignment.entity.User;
 import com.hsf.assignment.service.JwtService;
 import jakarta.servlet.FilterChain;

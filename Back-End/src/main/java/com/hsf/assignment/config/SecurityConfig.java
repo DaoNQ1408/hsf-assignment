@@ -1,7 +1,6 @@
 package com.hsf.assignment.config;
 
 import com.hsf.assignment.service.AccountService;
-import com.hsf.assignment.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -24,6 +24,7 @@ public class AccountServiceImpl implements AccountService {
         return userRepository.findByUsername(username).get();
     }
 
+
     @Override
     public User findById(Long userId) {
         return userRepository.findById(userId)
@@ -33,6 +34,7 @@ public class AccountServiceImpl implements AccountService {
                                         userId)
                 );
     }
+
 
     @Override
     public UserResponse findResponseById(Long userId) {

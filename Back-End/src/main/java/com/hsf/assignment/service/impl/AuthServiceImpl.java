@@ -47,6 +47,7 @@ public class AuthServiceImpl implements AuthService {
         return registerResponse;
     }
 
+
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
         if (loginRequest.getUsername() == null || loginRequest.getPassword() == null) {
@@ -67,6 +68,4 @@ public class AuthServiceImpl implements AuthService {
 
         return response;
     }
-
-
 }

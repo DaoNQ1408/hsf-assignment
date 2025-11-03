@@ -7,9 +7,7 @@ import com.hsf.assignment.entity.Pet;
 import com.hsf.assignment.entity.User;
 import com.hsf.assignment.mapper.ImageMapper;
 import com.hsf.assignment.repository.ImageRepository;
-import com.hsf.assignment.repository.PetRepository;
 import com.hsf.assignment.service.ImageService;
-import com.hsf.assignment.service.PetService;
 import com.hsf.assignment.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +25,6 @@ public class ImgServiceImpl implements ImageService {
     private final ImageRepository imageRepo;
     private final ImageMapper imageMapper;
     private final UserUtils userUtils;
-    private final PetRepository petRepo;
 
 
     @Override

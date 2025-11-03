@@ -25,6 +25,7 @@ public class JwtServiceImpl implements JwtService {
         this.userRepository = userRepository;
     }
 
+
     private SecretKey getSigninKey() {
         return Keys.hmacShaKeyFor(TOKEN_SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
@@ -41,6 +42,7 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
         return token;
     }
+
 
     @Override
     public User getUserByToken(String token) {

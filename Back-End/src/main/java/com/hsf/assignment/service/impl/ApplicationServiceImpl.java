@@ -86,6 +86,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         return applicationMapper.toApplicationResponse(application);
     }
 
+
     @Override
     @Transactional
     public ApplicationResponse createApplication(ApplicationRequest applicationRequest) {
@@ -100,6 +101,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         return applicationMapper.toApplicationResponse(application);
     }
 
+
     @Override
     @Transactional
     public ApplicationResponse updateUserApplication(Long id,ApplicationRequest request) {
@@ -110,6 +112,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         applicationRepository.save(application);
         return applicationMapper.toApplicationResponse(application);
     }
+
 
     @Override
     public ApplicationResponse updateApplication(Long id ,ApplicationUpdateRequest request) {
@@ -122,6 +125,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 applicationRepository.save(application));
     }
 
+
     @Override
     public List<ApplicationResponse> getAllNotUser() {
         User user = userUtils.getCurrentUser();
@@ -129,6 +133,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .map(applicationMapper::toApplicationResponse)
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public List<ApplicationResponse> getAll() {
@@ -162,6 +167,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         return applicationMapper.toApplicationResponse(adoptedApplication);
     }
 
+
     @Override
     @Transactional
     public ApplicationResponse hideApplication(Long applicationId) {
@@ -173,5 +179,4 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         return applicationMapper.toApplicationResponse(hiddenApplication);
     }
-
 }

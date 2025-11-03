@@ -3,6 +3,7 @@ package com.hsf.assignment.controller;
 import com.hsf.assignment.dto.request.PetRequest;
 import com.hsf.assignment.dto.response.PetResponse;
 import com.hsf.assignment.service.PetService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/pets")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class PetController {
 
     private final PetService petService;
