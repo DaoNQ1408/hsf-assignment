@@ -1,38 +1,38 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { AuthState, User } from '../types';
+import { authService } from '../services/authService';
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
       isAuthenticated: false,
+      token: null,
 
-      login: async (email: string, password: string, apiResponse?: any) => {
+      login: async (username: string, password: string) => {
         try {
-          if (apiResponse) {
-            const { token, ...userData } = apiResponse;
-            
-            set({ 
-              user: userData as User, 
-              isAuthenticated: true 
-            });
-            
-            if (token) {
-              localStorage.setItem('authToken', token);
-            }
-            
-            return true;
-          }
-          
-          const users = JSON.parse(localStorage.getItem('users') || '[]');
-          const user = users.find((u: User) => u.email === email && u.password === password);
-          
-          if (user) {
-            set({ user, isAuthenticated: true });
-            return true;
-          }
-          return false;
+          const response = await authService.login({ username, password });
+
+          const user: User = {
+            id: response.userId.toString(),
+            userId: response.userId,
+            username: response.username,
+            email: response.email,
+            phone: response.phone,
+            role: response.role,
+            createdAt: new Date(),
+          };
+
+          localStorage.setItem('authToken', response.token);
+
+          set({
+            user,
+            isAuthenticated: true,
+            token: response.token
+          });
+
+          return true;
         } catch (error) {
           console.error('Login error:', error);
           return false;
@@ -41,23 +41,18 @@ export const useAuthStore = create<AuthState>()(
 
       register: async (userData) => {
         try {
-          const users = JSON.parse(localStorage.getItem('users') || '[]');
-          const existingUser = users.find((u: User) => u.email === userData.email);
-          
-          if (existingUser) {
-            return false;
-          }
+          const response = await authService.register(userData);
 
-          const newUser: User = {
-            ...userData,
-            id: Date.now().toString(),
-            createdAt: new Date(),
+          const user: User = {
+            id: response.userId.toString(),
+            userId: response.userId,
+            username: response.username,
+            email: response.email,
+            phone: response.phone,
+            createdAt: new Date(response.createdAt),
           };
 
-          users.push(newUser);
-          localStorage.setItem('users', JSON.stringify(users));
-          
-          set({ user: newUser, isAuthenticated: true });
+          set({ user, isAuthenticated: false, token: null });
           return true;
         } catch (error) {
           console.error('Registration error:', error);
@@ -66,9 +61,8 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
-        // Xóa token khi logout
         localStorage.removeItem('authToken');
-        set({ user: null, isAuthenticated: false });
+        set({ user: null, isAuthenticated: false, token: null });
       },
 
       updateUser: async (userData) => {
@@ -76,17 +70,9 @@ export const useAuthStore = create<AuthState>()(
           const { user } = get();
           if (!user) return false;
 
-          const users = JSON.parse(localStorage.getItem('users') || '[]');
-          const userIndex = users.findIndex((u: User) => u.id === user.id);
-          
-          if (userIndex !== -1) {
-            users[userIndex] = { ...users[userIndex], ...userData };
-            localStorage.setItem('users', JSON.stringify(users));
-            
-            set({ user: { ...user, ...userData } });
-            return true;
-          }
-          return false;
+          const updatedUser = { ...user, ...userData };
+          set({ user: updatedUser });
+          return true;
         } catch (error) {
           console.error('Update user error:', error);
           return false;

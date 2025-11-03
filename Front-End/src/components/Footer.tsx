@@ -16,7 +16,7 @@ export default function Footer() {
               Connecting loving pets with caring families. Find your perfect companion through our trusted adoption platform.
             </p>
             <p className="text-amber-200 text-sm">
-              © 2024 PetAdopt. All rights reserved.
+              © 2025 PetAdopt. All rights reserved.
             </p>
           </div>
 
