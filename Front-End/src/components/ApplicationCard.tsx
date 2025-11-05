@@ -8,6 +8,10 @@ interface ApplicationCardProps {
 export default function ApplicationCard({ application, onViewDetails }: ApplicationCardProps) {
   const { pet, owner, createdAt } = application;
 
+  // Handle both backend and frontend field names
+  const petName = pet.petName || pet.name || 'Unknown';
+  const petImages = pet.imageUrls || pet.images || [];
+
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
       month: 'long',
@@ -21,10 +25,10 @@ export default function ApplicationCard({ application, onViewDetails }: Applicat
       <div className="p-6">
         <div className="flex items-start gap-4">
           <div className="w-20 h-20 rounded-lg overflow-hidden bg-amber-100 flex-shrink-0">
-            {pet.images.length > 0 ? (
+            {petImages.length > 0 ? (
               <img
-                src={pet.images[0]}
-                alt={pet.name}
+                src={petImages[0]}
+                alt={petName}
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -39,7 +43,7 @@ export default function ApplicationCard({ application, onViewDetails }: Applicat
           <div className="flex-1">
             <div className="flex items-start justify-between mb-2">
               <div>
-                <h3 className="text-xl font-semibold text-amber-900 mb-1">{pet.name}</h3>
+                <h3 className="text-xl font-semibold text-amber-900 mb-1">{petName}</h3>
                 <p className="text-amber-700 capitalize">
                   {pet.species} • {pet.age} years old • {pet.sex}
                 </p>
@@ -64,13 +68,29 @@ export default function ApplicationCard({ application, onViewDetails }: Applicat
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-              <span>Posted by {owner.username}</span>
+              <span>Posted by {owner.username || owner.email || `User #${owner.id}`}</span>
               <span>•</span>
               <span>{formatDate(createdAt)}</span>
             </div>
 
             {pet.description && (
               <p className="text-amber-700 line-clamp-2 mb-4">{pet.description}</p>
+            )}
+
+            {application.applicationContent && (
+              <div className="mb-4">
+                <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-semibold text-amber-900">Content:</p>
+                    <span className="text-xs text-amber-600">{application.applicationContent.length} characters</span>
+                  </div>
+                  <div className="max-h-24 overflow-y-auto">
+                    <p className="text-sm text-amber-700 whitespace-pre-wrap leading-relaxed">
+                      {application.applicationContent}
+                    </p>
+                  </div>
+                </div>
+              </div>
             )}
 
             <button

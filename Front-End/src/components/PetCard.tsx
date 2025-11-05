@@ -6,16 +6,23 @@ interface PetCardProps {
 }
 
 export default function PetCard({ pet, onClick }: PetCardProps) {
+  // Handle both backend (petName, imageUrls) and frontend (name, images) field names
+  const displayName = pet.petName || pet.name || 'Unknown';
+  const displayImages = pet.imageUrls || pet.images || [];
+  const displaySex = pet.sex ? pet.sex.toUpperCase() : 'UNKNOWN';
+  const weight = pet.weight;
+  const vaccination = pet.vaccination;
+
   return (
     <div
       onClick={onClick}
       className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow cursor-pointer overflow-hidden group"
     >
-      <div className="aspect-square overflow-hidden bg-amber-100">
-        {pet.images.length > 0 ? (
+      <div className="aspect-square overflow-hidden bg-amber-100 relative">
+        {displayImages.length > 0 ? (
           <img
-            src={pet.images[0]}
-            alt={pet.name}
+            src={displayImages[0]}
+            alt={displayName}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
@@ -25,19 +32,27 @@ export default function PetCard({ pet, onClick }: PetCardProps) {
             </svg>
           </div>
         )}
+        {vaccination && (
+          <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            Vaccinated
+          </div>
+        )}
       </div>
 
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-amber-900 mb-1">{pet.name}</h3>
-        <div className="flex items-center gap-4 text-sm text-amber-700">
+        <h3 className="text-lg font-semibold text-amber-900 mb-1">{displayName}</h3>
+        <div className="flex items-center gap-2 text-sm text-amber-700 mb-2">
           <span className="capitalize">{pet.species}</span>
           <span>•</span>
           <span>{pet.age} years old</span>
           <span>•</span>
-          <span className="capitalize">{pet.sex}</span>
+          <span className="capitalize">{displaySex}</span>
         </div>
-        {pet.breed && (
-          <p className="text-sm text-amber-600 mt-1">{pet.breed}</p>
+        {weight && (
+          <p className="text-sm text-amber-600">Weight: {weight} kg</p>
         )}
       </div>
     </div>

@@ -246,12 +246,23 @@ export const useApplicationStore = create<ApplicationState>()(
 
           const applicationId = typeof id === 'string' ? parseInt(id) : id;
 
+          // Validate petId
+          const petId = typeof applicationData.petId === 'string'
+            ? parseInt(applicationData.petId)
+            : applicationData.petId;
+
+          if (!petId || petId === 0 || isNaN(petId)) {
+            console.error('Invalid petId for update:', applicationData.petId);
+            set({ error: 'Invalid pet ID', loading: false });
+            return false;
+          }
+
           const updateRequest = {
-            petId: typeof applicationData.petId === 'string'
-              ? parseInt(applicationData.petId)
-              : applicationData.petId || 0,
+            petId: petId,
             applicationContent: applicationData.applicationContent || '',
           };
+
+          console.log('Updating application:', applicationId, 'with data:', updateRequest);
 
           const response = await applicationService.updateUserApplication(applicationId, updateRequest);
 
@@ -430,7 +441,7 @@ export const useApplicationStore = create<ApplicationState>()(
       getActiveApplications: () => {
         const { applications } = get();
         return applications.filter((app) =>
-          app.status === 'active' || app.status === 'AVAILABLE'
+           app.status === 'AVAILABLE'
         );
       },
     }),

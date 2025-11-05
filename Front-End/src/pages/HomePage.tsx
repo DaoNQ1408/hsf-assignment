@@ -1,16 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ApplicationCard from '../components/ApplicationCard';
 import ApplicationDetailsModal from '../components/ApplicationDetailsModal';
 import { useApplicationStore } from '../stores/applicationStore';
+import type { AdoptionApplication } from '../types';
 
 export default function HomePage() {
-  const [selectedApplication, setSelectedApplication] = useState(null);
+  const [selectedApplication, setSelectedApplication] = useState<AdoptionApplication | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { getActiveApplications } = useApplicationStore();
+  const { getActiveApplications, fetchApplications } = useApplicationStore();
   const applications = getActiveApplications();
 
-  const handleViewDetails = (application: any) => {
+  // Fetch applications from backend when component mounts
+  useEffect(() => {
+    fetchApplications();
+  }, [fetchApplications]);
+
+  const handleViewDetails = (application: AdoptionApplication) => {
     setSelectedApplication(application);
     setIsModalOpen(true);
   };

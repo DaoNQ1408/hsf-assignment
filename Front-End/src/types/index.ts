@@ -1,6 +1,6 @@
 // Backend API Types
 export type Species = 'CAT' | 'DOG' | 'BIRD' | 'FISH' | 'RABBIT' | 'HAMSTER' | 'TURTLE' | 'REPTILE' | 'OTHER';
-export type Sex = 'MALE' | 'FEMALE';
+export type Sex = 'MALE' | 'FEMALE' | 'OTHER';
 export type ApplicationStatus = 'AVAILABLE' | 'PENDING' | 'ADOPTED' | 'HIDDEN';
 export type UserRole = 'USER' | 'ADMIN';
 
@@ -24,21 +24,22 @@ export interface User {
 export interface Pet {
   id: string;
   petId?: number; // Backend ID
-  name: string;
   petName?: string; // Backend uses petName
+  name?: string; // Frontend fallback
   species: string;
-  breed?: string;
+  breed?: string; // Optional, not in backend
   age: number;
-  weight?: number;
-  height?: number;
-  sex: 'male' | 'female' | 'MALE' | 'FEMALE';
-  images: string[];
+  weight?: number; // Backend field
+  height?: number; // Backend field
+  sex: 'male' | 'female' | 'MALE' | 'FEMALE' | 'OTHER';
   imageUrls?: string[]; // Backend uses imageUrls
-  vaccinationSchedule?: string;
+  images?: string[]; // Frontend fallback
   vaccination?: boolean; // Backend uses vaccination boolean
+  vaccinationSchedule?: string; // Old field, may not be used
   description: string;
-  ownerId: string | number;
-  createdAt: Date;
+  ownerId?: string | number;
+  userId?: number; // Backend may use userId
+  createdAt?: Date;
 }
 
 export interface AdoptionApplication {
@@ -72,8 +73,8 @@ export interface PetState {
   error: string | null;
   fetchPets: () => Promise<void>;
   fetchMyPets: () => Promise<void>;
-  addPet: (pet: Omit<Pet, 'id' | 'createdAt'>) => Promise<boolean>;
-  updatePet: (id: string | number, pet: Partial<Pet>) => Promise<boolean>;
+  addPet: (pet: any) => Promise<boolean>;
+  updatePet: (id: string | number, pet: any) => Promise<boolean>;
   deletePet: (id: string | number) => Promise<boolean>;
   getPetById: (id: string) => Pet | undefined;
   getPetsByOwnerId: (ownerId: string) => Pet[];

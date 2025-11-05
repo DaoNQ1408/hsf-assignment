@@ -7,29 +7,35 @@ import { usePetStore } from '../stores/petStore';
 import { UploadService } from '../services/cloudinaryService';
 import type { Pet } from '../types';
 
+// Mirror backend enums
+type PetSpecies = 'CAT' | 'DOG' | 'BIRD' | 'FISH' | 'RABBIT' | 'HAMSTER' | 'TURTLE' | 'REPTILE' | 'OTHER';
+type PetSex = 'MALE' | 'FEMALE' | 'OTHER';
+
 // Component PetFormModal cần nhận TẤT CẢ props cần thiết
 interface PetFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   formData: {
-    name: string;
-    species: string;
-    breed: string;
+    petName: string;
+    species: PetSpecies | '';
     age: string;
-    sex: 'male' | 'female';
-    images: string[];
-    vaccinationSchedule: string;
+    weight: string;
+    height: string;
+    sex: PetSex;
+    imageUrls: string[];
+    vaccination: boolean;
     description: string;
   };
   setFormData: React.Dispatch<React.SetStateAction<{
-    name: string;
-    species: string;
-    breed: string;
+    petName: string;
+    species: PetSpecies | '';
     age: string;
-    sex: 'male' | 'female';
-    images: string[];
-    vaccinationSchedule: string;
+    weight: string;
+    height: string;
+    sex: PetSex;
+    imageUrls: string[];
+    vaccination: boolean;
     description: string;
   }>>;
   handleSubmit: (e: React.FormEvent) => void;
@@ -67,41 +73,39 @@ const PetFormModal = ({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-amber-900 mb-2">Name *</label>
-              <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none"
-                  required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-amber-900 mb-2">Species *</label>
-              <input
-                  type="text"
-                  value={formData.species}
-                  onChange={(e) => setFormData(prev => ({ ...prev, species: e.target.value }))}
-                  className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none"
-                  placeholder="e.g., Dog, Cat"
-                  required
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-amber-900 mb-2">Pet Name *</label>
+            <input
+                type="text"
+                value={formData.petName}
+                onChange={(e) => setFormData(prev => ({ ...prev, petName: e.target.value }))}
+                className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none"
+                required
+            />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-amber-900 mb-2">Breed</label>
-              <input
-                  type="text"
-                  value={formData.breed}
-                  onChange={(e) => setFormData(prev => ({ ...prev, breed: e.target.value }))}
+              <label className="block text-sm font-medium text-amber-900 mb-2">Species *</label>
+              <select
+                  value={formData.species}
+                  onChange={(e) => setFormData(prev => ({ ...prev, species: e.target.value as PetSpecies }))}
                   className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none"
-                  placeholder="e.g., Golden Retriever"
-              />
+                  required
+              >
+                <option value="">Select species</option>
+                <option value="CAT">Cat</option>
+                <option value="DOG">Dog</option>
+                <option value="BIRD">Bird</option>
+                <option value="FISH">Fish</option>
+                <option value="RABBIT">Rabbit</option>
+                <option value="HAMSTER">Hamster</option>
+                <option value="TURTLE">Turtle</option>
+                <option value="REPTILE">Reptile</option>
+                <option value="OTHER">Other</option>
+              </select>
             </div>
+
             <div>
               <label className="block text-sm font-medium text-amber-900 mb-2">Age (years) *</label>
               <input
@@ -110,29 +114,65 @@ const PetFormModal = ({
                   onChange={(e) => setFormData(prev => ({ ...prev, age: e.target.value }))}
                   className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none"
                   min="0"
-                  max="30"
                   required
               />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-amber-900 mb-2">Sex *</label>
+              <select
+                  value={formData.sex}
+                  onChange={(e) => setFormData(prev => ({ ...prev, sex: e.target.value as PetSex }))}
+                  className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none"
+                  required
+              >
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-amber-900 mb-2">Sex *</label>
-            <select
-                value={formData.sex}
-                onChange={(e) => setFormData(prev => ({ ...prev, sex: e.target.value as 'male' | 'female' }))}
-                className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none"
-                required
-            >
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-amber-900 mb-2">Weight (kg) *</label>
+              <input
+                  type="number"
+                  value={formData.weight}
+                  onChange={(e) => setFormData(prev => ({ ...prev, weight: e.target.value }))}
+                  className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none"
+                  min="0"
+                  required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-amber-900 mb-2">Height (cm) *</label>
+              <input
+                  type="number"
+                  value={formData.height}
+                  onChange={(e) => setFormData(prev => ({ ...prev, height: e.target.value }))}
+                  className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none"
+                  min="0"
+                  required
+              />
+            </div>
+            <div className="flex items-end pb-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                    type="checkbox"
+                    checked={formData.vaccination}
+                    onChange={(e) => setFormData(prev => ({ ...prev, vaccination: e.target.checked }))}
+                    className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-amber-300 rounded"
+                />
+                <span className="text-sm font-medium text-amber-900">Vaccinated</span>
+              </label>
+            </div>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-amber-900 mb-2">Images</label>
             <p className="text-sm text-amber-600 mb-3">Upload images or enter URLs</p>
-            {formData.images.map((image, index) => (
+            {formData.imageUrls.map((image, index) => (
                 <div key={index} className="mb-4 p-4 border border-amber-200 rounded-lg bg-amber-50">
                   <div className="flex gap-2 mb-2">
                     <input
@@ -142,7 +182,7 @@ const PetFormModal = ({
                         className="flex-1 px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none bg-white"
                         placeholder="Enter image URL or upload below"
                     />
-                    {formData.images.length > 1 && (
+                    {formData.imageUrls.length > 1 && (
                         <button
                             type="button"
                             onClick={() => removeImageField(index)}
@@ -215,26 +255,17 @@ const PetFormModal = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-amber-900 mb-2">Vaccination Schedule</label>
-            <textarea
-                value={formData.vaccinationSchedule}
-                onChange={(e) => setFormData(prev => ({ ...prev, vaccinationSchedule: e.target.value }))}
-                className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none"
-                rows={4}
-                placeholder="Describe the pet's vaccination history and schedule..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-amber-900 mb-2">Description *</label>
+            <label className="block text-sm font-medium text-amber-900 mb-2">Description</label>
             <textarea
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none"
-                rows={4}
-                placeholder="Tell potential adopters about this pet's personality, habits, and needs..."
-                required
+                className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none resize-y"
+                rows={8}
+                placeholder="Tell potential adopters about this pet's personality, habits, medical history, special needs, favorite activities, temperament with children/other pets, dietary requirements, training level, and any other important information..."
             />
+            <p className="text-xs text-amber-600 mt-1">
+              {formData.description.length} characters
+            </p>
           </div>
 
           <div className="flex gap-4">
@@ -264,13 +295,14 @@ export default function PetManagePage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [uploadingImages, setUploadingImages] = useState<boolean[]>([false]);
   const [formData, setFormData] = useState({
-    name: '',
-    species: '',
-    breed: '',
+    petName: '',
+    species: '' as PetSpecies | '',
     age: '',
-    sex: 'male' as 'male' | 'female',
-    images: [''],
-    vaccinationSchedule: '',
+    weight: '',
+    height: '',
+    sex: 'MALE' as PetSex,
+    imageUrls: [''],
+    vaccination: false,
     description: '',
   });
 
@@ -290,13 +322,14 @@ export default function PetManagePage() {
 
   const handleAddPet = useCallback(() => {
     setFormData({
-      name: '',
+      petName: '',
       species: '',
-      breed: '',
       age: '',
-      sex: 'male',
-      images: [''],
-      vaccinationSchedule: '',
+      weight: '',
+      height: '',
+      sex: 'MALE',
+      imageUrls: [''],
+      vaccination: false,
       description: '',
     });
     setUploadingImages([false]);
@@ -305,17 +338,24 @@ export default function PetManagePage() {
 
   const handleEditPet = useCallback((pet: Pet) => {
     setSelectedPet(pet);
+    // Handle both backend (petName) and frontend (name) field names
+    const name = pet.petName || pet.name || '';
+    const images = pet.imageUrls || pet.images || [''];
+    const species = (pet.species || '') as PetSpecies | '';
+    const sex = ((pet.sex || 'MALE').toUpperCase() as PetSex);
+
     setFormData({
-      name: pet.name,
-      species: pet.species,
-      breed: pet.breed || '',
-      age: pet.age.toString(),
-      sex: (pet.sex.toLowerCase() as 'male' | 'female'),
-      images: pet.images.length > 0 ? pet.images : [''],
-      vaccinationSchedule: pet.vaccinationSchedule || '',
-      description: pet.description,
+      petName: name,
+      species: species,
+      age: pet.age?.toString() || '',
+      weight: (pet.weight || '').toString(),
+      height: (pet.height || '').toString(),
+      sex: sex,
+      imageUrls: images.length > 0 ? images : [''],
+      vaccination: !!pet.vaccination,
+      description: pet.description || '',
     });
-    setUploadingImages(new Array(pet.images.length || 1).fill(false));
+    setUploadingImages(new Array(images.length || 1).fill(false));
     setIsEditModalOpen(true);
   }, []);
 
@@ -330,20 +370,24 @@ export default function PetManagePage() {
 
     if (!user) return;
 
-    const petData = {
-      name: formData.name,
-      species: formData.species,
-      breed: formData.breed,
-      age: parseInt(formData.age),
+    const petData: any = {
+      petName: formData.petName,
+      name: formData.petName, // Include both for compatibility
+      species: formData.species || undefined,
+      age: parseInt(formData.age, 10),
+      weight: parseInt(formData.weight, 10),
+      height: parseInt(formData.height, 10),
       sex: formData.sex,
-      images: formData.images.filter(img => img.trim() !== ''),
-      vaccinationSchedule: formData.vaccinationSchedule,
+      imageUrls: formData.imageUrls.filter(img => img.trim() !== ''),
+      images: formData.imageUrls.filter(img => img.trim() !== ''), // Include both for compatibility
+      vaccination: formData.vaccination,
       description: formData.description,
-      ownerId: user.id,
+      userId: user.id,
+      ownerId: user.id, // Include both for compatibility
     };
 
     const success = isEditModalOpen && selectedPet
-        ? await updatePet(selectedPet.id, petData)
+        ? await updatePet(selectedPet.petId || selectedPet.id, petData)
         : await addPet(petData);
 
     if (success) {
@@ -376,9 +420,9 @@ export default function PetManagePage() {
 
       if (imageUrl) {
         setFormData(prev => {
-          const newImages = [...prev.images];
+          const newImages = [...prev.imageUrls];
           newImages[index] = imageUrl;
-          return { ...prev, images: newImages };
+          return { ...prev, imageUrls: newImages };
         });
       } else {
         alert('Failed to upload image. Please try again.');
@@ -397,21 +441,21 @@ export default function PetManagePage() {
 
   const handleImageChange = useCallback((index: number, value: string) => {
     setFormData(prev => {
-      const newImages = [...prev.images];
+      const newImages = [...prev.imageUrls];
       newImages[index] = value;
-      return { ...prev, images: newImages };
+      return { ...prev, imageUrls: newImages };
     });
   }, []);
 
   const addImageField = useCallback(() => {
-    setFormData(prev => ({ ...prev, images: [...prev.images, ''] }));
+    setFormData(prev => ({ ...prev, imageUrls: [...prev.imageUrls, ''] }));
     setUploadingImages(prev => [...prev, false]);
   }, []);
 
   const removeImageField = useCallback((index: number) => {
     setFormData(prev => {
-      const newImages = prev.images.filter((_, i) => i !== index);
-      return { ...prev, images: newImages.length > 0 ? newImages : [''] };
+      const newImages = prev.imageUrls.filter((_, i) => i !== index);
+      return { ...prev, imageUrls: newImages.length > 0 ? newImages : [''] };
     });
     setUploadingImages(prev => {
       const newUploadingImages = prev.filter((_, i) => i !== index);

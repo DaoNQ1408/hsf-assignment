@@ -11,6 +11,10 @@ export default function ApplicationDetailsModal({ application, isOpen, onClose }
 
   const { pet, owner, createdAt, updatedAt } = application;
 
+  // Handle both backend and frontend field names
+  const petName = pet.petName || pet.name || 'Unknown';
+  const petImages = pet.imageUrls || pet.images || [];
+
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
       month: 'long',
@@ -41,12 +45,12 @@ export default function ApplicationDetailsModal({ application, isOpen, onClose }
             <div>
               <h3 className="text-lg font-semibold text-amber-900 mb-4">Pet Information</h3>
 
-              {pet.images.length > 0 && (
+              {petImages.length > 0 && (
                 <div className="mb-4">
                   <div className="aspect-square rounded-lg overflow-hidden bg-amber-100">
                     <img
-                      src={pet.images[0]}
-                      alt={pet.name}
+                      src={petImages[0]}
+                      alt={petName}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -56,7 +60,7 @@ export default function ApplicationDetailsModal({ application, isOpen, onClose }
               <div className="space-y-3">
                 <div className="flex justify-between py-2 border-b border-amber-100">
                   <span className="text-amber-600">Name</span>
-                  <span className="font-medium text-amber-900">{pet.name}</span>
+                  <span className="font-medium text-amber-900">{petName}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b border-amber-100">
                   <span className="text-amber-600">Species</span>
@@ -78,7 +82,7 @@ export default function ApplicationDetailsModal({ application, isOpen, onClose }
 
               {pet.description && (
                 <div className="mt-4">
-                  <h4 className="font-medium text-amber-900 mb-2">About {pet.name}</h4>
+                  <h4 className="font-medium text-amber-900 mb-2">About {petName}</h4>
                   <p className="text-amber-700 text-sm leading-relaxed">{pet.description}</p>
                 </div>
               )}
@@ -92,6 +96,23 @@ export default function ApplicationDetailsModal({ application, isOpen, onClose }
             </div>
 
             <div>
+              {application.applicationContent && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-amber-900 mb-3">Application Content</h3>
+                  <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-sm font-medium text-amber-900">Why I Want to Adopt:</p>
+                      <span className="text-xs text-amber-600">{application.applicationContent.length} characters</span>
+                    </div>
+                    <div className="max-h-64 overflow-y-auto">
+                      <p className="text-sm text-amber-700 whitespace-pre-wrap leading-relaxed">
+                        {application.applicationContent}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <h3 className="text-lg font-semibold text-amber-900 mb-4">Owner Contact Information</h3>
 
               <div className="bg-amber-50 rounded-lg p-4 mb-4">
@@ -102,7 +123,7 @@ export default function ApplicationDetailsModal({ application, isOpen, onClose }
                     </svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-amber-900">{owner.username}</p>
+                    <p className="font-semibold text-amber-900">{owner.username || owner.email || `User #${owner.id}`}</p>
                     <p className="text-sm text-amber-600">Pet Owner</p>
                   </div>
                 </div>
@@ -134,7 +155,7 @@ export default function ApplicationDetailsModal({ application, isOpen, onClose }
                 <h4 className="font-medium text-blue-900 mb-2">How to Adopt</h4>
                 <p className="text-sm text-blue-700 leading-relaxed">
                   Contact the owner directly using the information provided above.
-                  Please be respectful and patient when reaching out about adopting {pet.name}.
+                  Please be respectful and patient when reaching out about adopting {petName}.
                   All adoption arrangements are made between you and the pet owner.
                 </p>
               </div>
