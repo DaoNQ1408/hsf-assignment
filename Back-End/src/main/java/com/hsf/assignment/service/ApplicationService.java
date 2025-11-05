@@ -1,5 +1,6 @@
 package com.hsf.assignment.service;
 
+import com.hsf.assignment.Enum.ApplicationStatus;
 import com.hsf.assignment.dto.request.ApplicationRequest;
 import com.hsf.assignment.dto.request.ApplicationUpdateRequest;
 import com.hsf.assignment.dto.response.ApplicationResponse;
@@ -24,4 +25,5 @@ public interface ApplicationService {
     ApplicationResponse updateApplication(Long id ,ApplicationUpdateRequest request);
     ApplicationResponse adoptedApplication(Long applicationId, Long receiverId);
     ApplicationResponse hideApplication(Long applicationId);
+    ApplicationResponse updateApplicationStatus(Long applicationId, ApplicationStatus status);
 }

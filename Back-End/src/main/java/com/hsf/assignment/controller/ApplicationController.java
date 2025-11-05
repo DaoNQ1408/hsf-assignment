@@ -1,5 +1,6 @@
 package com.hsf.assignment.controller;
 
+import com.hsf.assignment.Enum.ApplicationStatus;
 import com.hsf.assignment.dto.request.ApplicationRequest;
 import com.hsf.assignment.dto.response.ApplicationResponse;
 import com.hsf.assignment.service.ApplicationService;
@@ -67,6 +68,14 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.updateUserApplication(id,request));
     }
 
+    @PutMapping("/application/by-author/{id}")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+    public ResponseEntity<ApplicationResponse> updateApplicationStatus(
+            @PathVariable Long id,
+            @RequestBody ApplicationStatus status) {
+        return ResponseEntity.ok(applicationService.updateApplicationStatus(id,status));
+    }
+
 
 //    @PutMapping()
 //    public ResponseEntity<ApplicationResponse> updateApplication(
@@ -78,7 +87,7 @@ public class ApplicationController {
 
 
     @GetMapping()
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<List<ApplicationResponse>> getAllApplications() {
         return ResponseEntity.ok(applicationService.getAll());
     }

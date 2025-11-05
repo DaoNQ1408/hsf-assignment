@@ -40,7 +40,7 @@ public class Pet {
     @Enumerated(EnumType.STRING)
     private PetSex sex;
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "NVARCHAR(MAX)")
     private String description;
 
     @Column(name = "vaccination")

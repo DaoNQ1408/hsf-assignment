@@ -179,4 +179,12 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         return applicationMapper.toApplicationResponse(hiddenApplication);
     }
+
+    @Override
+    public ApplicationResponse updateApplicationStatus(Long applicationId, ApplicationStatus status) {
+        Application application = findById(applicationId);
+        application.setStatus(status);
+        Application updatedApplication = applicationRepository.save(application);
+        return applicationMapper.toApplicationResponse(updatedApplication);
+    }
 }

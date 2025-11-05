@@ -40,7 +40,7 @@ public class Application {
     private User receiver;
 
     @Lob
-    @Column(name = "application_content", columnDefinition = "TEXT")
+    @Column(name = "application_content", columnDefinition = "NVARCHAR(MAX)")
     private String applicationContent;
 
     @PrePersist
