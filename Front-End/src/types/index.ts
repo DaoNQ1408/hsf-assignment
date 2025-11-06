@@ -89,9 +89,10 @@ export interface ApplicationState {
   fetchReceivedApplications: () => Promise<void>;
   addApplication: (application: { petId: number; applicationContent: string }) => Promise<boolean>;
   updateApplication: (id: string | number, application: Partial<AdoptionApplication>) => Promise<boolean>;
+  updateApplicationStatus: (id: number, status: ApplicationStatus) => Promise<boolean>;
   deleteApplication: (id: string | number) => Promise<boolean>;
   hideApplication: (id: number) => Promise<boolean>;
   adoptApplication: (applicationId: number, receiverId: number) => Promise<boolean>;
   getApplicationsByOwnerId: (ownerId: string) => AdoptionApplication[];
-  getActiveApplications: () => AdoptionApplication[];
+  getActiveApplications: (excludeUserId?: number) => AdoptionApplication[];
 }

@@ -62,7 +62,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-amber-900 mb-2">
-              Username or Email {/* Updated label */}
+              Username {/* Updated label */}
             </label>
             <input
               type="text" // Changed type to text to allow username or email

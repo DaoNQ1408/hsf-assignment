@@ -63,17 +63,17 @@ public class ApplicationController {
     @PutMapping("/by-author/{id}")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<ApplicationResponse> updateUserApplication(
-            @PathVariable Long id,
+            @PathVariable(name = "id") Long applicationId,
             @RequestBody ApplicationRequest request) {
-        return ResponseEntity.ok(applicationService.updateUserApplication(id,request));
+        return ResponseEntity.ok(applicationService.updateUserApplication(applicationId,request));
     }
 
-    @PutMapping("/application/by-author/{id}")
+    @PutMapping("/status/by-author/{id}")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<ApplicationResponse> updateApplicationStatus(
-            @PathVariable Long id,
+            @PathVariable(name = "id") Long applicationId,
             @RequestBody ApplicationStatus status) {
-        return ResponseEntity.ok(applicationService.updateApplicationStatus(id,status));
+        return ResponseEntity.ok(applicationService.updateApplicationStatus(applicationId,status));
     }
 
 

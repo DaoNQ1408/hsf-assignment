@@ -14,7 +14,7 @@ export default function ApplicationManagePage() {
   const [viewingApplication, setViewingApplication] = useState<AdoptionApplication | null>(null);
 
   const { user, isAuthenticated } = useAuthStore();
-  const { fetchMyApplications, getApplicationsByOwnerId, addApplication, updateApplication, deleteApplication, hideApplication, adoptApplication } = useApplicationStore();
+  const { fetchMyApplications, getApplicationsByOwnerId, addApplication, updateApplication, updateApplicationStatus, deleteApplication, hideApplication, adoptApplication } = useApplicationStore();
   const { getPetsByOwnerId, fetchMyPets } = usePetStore();
   const navigate = useNavigate();
 
@@ -69,35 +69,8 @@ export default function ApplicationManagePage() {
         success = await adoptApplication(parseInt(applicationId), user.userId || parseInt(user.id));
       }
     } else if (newStatus === 'AVAILABLE') {
-      // For AVAILABLE status, need to provide full ApplicationRequest
-      // Find the application to get petId and content
-      const application = applications.find(app =>
-        app.id === applicationId ||
-        app.applicationId?.toString() === applicationId ||
-        app.id === applicationId.toString() ||
-        app.applicationId === parseInt(applicationId)
-      );
-
-      if (application) {
-        // Get petId with multiple fallbacks
-        const petId = application.pet?.petId ||
-                     application.petId ||
-                     (application.pet?.id ? parseInt(application.pet.id) : null);
-        const content = application.applicationContent || '';
-
-        if (petId) {
-          success = await updateApplication(applicationId, {
-            petId: petId,
-            applicationContent: content
-          });
-        } else {
-          console.error('Cannot find petId for application:', application);
-          alert('Error: Cannot update application - missing pet information');
-        }
-      } else {
-        console.error('Application not found:', applicationId, 'in', applications);
-        alert('Error: Application not found');
-      }
+      // Use the new updateApplicationStatus API for AVAILABLE status
+      success = await updateApplicationStatus(parseInt(applicationId), 'AVAILABLE');
     }
 
     if (success && user) {

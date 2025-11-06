@@ -181,6 +181,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    @Transactional
     public ApplicationResponse updateApplicationStatus(Long applicationId, ApplicationStatus status) {
         Application application = findById(applicationId);
         application.setStatus(status);

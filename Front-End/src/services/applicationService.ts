@@ -61,6 +61,16 @@ export const applicationService = {
     return response.data;
   },
 
+  // PUT /api/application/by-author/{id} - Update application status directly
+  updateApplicationStatus: async (id: number, status: ApplicationStatus): Promise<ApplicationResponse> => {
+    const response = await apiClient.put<ApplicationResponse>(`/api/applications/status/by-author/${id}`, status, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return response.data;
+  },
+
   // PUT /api/applications/hidden/{id} - Hide application
   hideApplication: async (id: number): Promise<ApplicationResponse> => {
     const response = await apiClient.put<ApplicationResponse>(`/api/applications/hidden/${id}`);

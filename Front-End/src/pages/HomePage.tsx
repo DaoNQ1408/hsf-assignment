@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import ApplicationCard from '../components/ApplicationCard';
 import ApplicationDetailsModal from '../components/ApplicationDetailsModal';
 import { useApplicationStore } from '../stores/applicationStore';
+import { useAuthStore } from '../stores/authStore';
 import type { AdoptionApplication } from '../types';
 
 export default function HomePage() {
@@ -9,7 +10,10 @@ export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { getActiveApplications, fetchApplications } = useApplicationStore();
-  const applications = getActiveApplications();
+  const { user } = useAuthStore();
+
+  // Filter out the current user's own applications
+  const applications = getActiveApplications(user?.userId);
 
   // Fetch applications from backend when component mounts
   useEffect(() => {

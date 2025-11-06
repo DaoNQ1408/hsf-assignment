@@ -369,6 +369,70 @@ export const useApplicationStore = create<ApplicationState>()(
         }
       },
 
+      updateApplicationStatus: async (id, status) => {
+        try {
+          set({ loading: true, error: null });
+          const response = await applicationService.updateApplicationStatus(id, status);
+
+          const pet: Pet = {
+            id: response.pet.petId.toString(),
+            petId: response.pet.petId,
+            name: response.pet.petName,
+            petName: response.pet.petName,
+            species: response.pet.species,
+            age: response.pet.age,
+            weight: response.pet.weight,
+            height: response.pet.height,
+            sex: response.pet.sex.toLowerCase() as 'male' | 'female',
+            images: response.pet.imageUrls,
+            imageUrls: response.pet.imageUrls,
+            vaccination: response.pet.vaccination,
+            description: response.pet.description,
+            ownerId: response.pet.ownerId,
+            createdAt: new Date(),
+          };
+
+          const author: User = {
+            id: response.author.userId.toString(),
+            userId: response.author.userId,
+            username: '',
+            email: response.author.email,
+            phone: response.author.phone,
+            createdAt: new Date(),
+          };
+
+          const updatedApplication: AdoptionApplication = {
+            id: response.applicationId.toString(),
+            applicationId: response.applicationId,
+            petId: response.pet.petId,
+            pet,
+            ownerId: response.author.userId.toString(),
+            owner: author,
+            applicationContent: response.applicationContent,
+            status: response.status,
+            author: response.author,
+            receiver: response.receiver,
+            createdAt: new Date(response.createdAt),
+            updatedAt: new Date(response.createdAt),
+          };
+
+          set((state) => ({
+            applications: state.applications.map((app) =>
+              app.applicationId === id
+                ? updatedApplication
+                : app
+            ),
+            loading: false,
+          }));
+
+          return true;
+        } catch (error) {
+          console.error('Update application status error:', error);
+          set({ error: 'Failed to update application status', loading: false });
+          return false;
+        }
+      },
+
       adoptApplication: async (applicationId, receiverId) => {
         try {
           set({ loading: true, error: null });
@@ -438,11 +502,15 @@ export const useApplicationStore = create<ApplicationState>()(
         return applications.filter((app) => app.ownerId === ownerId);
       },
 
-      getActiveApplications: () => {
+      getActiveApplications: (excludeUserId?: number) => {
         const { applications } = get();
-        return applications.filter((app) =>
-           app.status === 'AVAILABLE'
-        );
+        return applications.filter((app) => {
+          // Normalize status to uppercase for comparison
+          const statusUpper = typeof app.status === 'string' ? app.status.toUpperCase() : app.status;
+          const isAvailable = statusUpper === 'AVAILABLE';
+          const isNotOwnApplication = excludeUserId ? app.author?.userId !== excludeUserId : true;
+          return isAvailable && isNotOwnApplication;
+        });
       },
     }),
     {
