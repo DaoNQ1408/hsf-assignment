@@ -33,8 +33,14 @@ public interface UserMapper {
 
     UserResponse toUserResponse(User user);
 
+    @Mapping(target = "userName", source = "username")
+    @Mapping(target = "phone", source = "phone")
     AdminResponse toAdminResponse(User user);
 
     List<AdminResponse> toAdminResponseList(List<User> userList);
+
+    @Mapping(target = "phone", source = "phone")
+    @Mapping(target = "role", source = "role")
+    @Mapping(target = "status", source = "status")
     void updateUser(AdminUpdateRequest request, @MappingTarget User user);
 }

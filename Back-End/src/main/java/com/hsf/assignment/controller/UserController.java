@@ -27,15 +27,13 @@ public class UserController {
     @GetMapping("{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<AdminResponse> getUserById(@PathVariable("id") Long id) {
-    return ResponseEntity.ok(userService.getUserById(id));
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PutMapping("{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<AdminResponse> updatedUser(
-            @PathVariable Long id,
-            @RequestBody AdminUpdateRequest request
-            ) {
+    public ResponseEntity<AdminResponse> updatedUser(@PathVariable Long id,
+                                                     @RequestBody AdminUpdateRequest request) {
         AdminResponse response = userService.updatedUser(id, request);
         return ResponseEntity.ok(response);
     }
