@@ -57,8 +57,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author")
     private List<Application> receiverApplications;
 
-    @OneToMany(mappedBy = "user")
-    private List<Image> images;
+    @OneToOne(mappedBy = "user")
+    private Image image;
 
     @OneToMany(mappedBy = "user")
     private List<Pet> pets;

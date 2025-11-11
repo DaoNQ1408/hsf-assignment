@@ -1,7 +1,11 @@
 package com.hsf.assignment.controller;
 
 import com.hsf.assignment.dto.request.AdminUpdateRequest;
+import com.hsf.assignment.dto.request.UserProfileRequest;
 import com.hsf.assignment.dto.response.AdminResponse;
+import com.hsf.assignment.dto.response.UserProfileResponse;
+import com.hsf.assignment.dto.response.UserResponse;
+import com.hsf.assignment.entity.User;
 import com.hsf.assignment.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +47,17 @@ public class UserController {
     public ResponseEntity<AdminResponse> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/user-profile")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<UserResponse> udateUserProfile(@RequestBody UserProfileRequest request) {
+        return ResponseEntity.ok(userService.updateUser(request));
+    }
+
+    @GetMapping("/user-profile")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<UserProfileResponse> getUserProfile() {
+        return ResponseEntity.ok(userService.getUserProfile());
     }
 }

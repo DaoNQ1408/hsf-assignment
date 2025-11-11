@@ -33,7 +33,7 @@ public class Image {
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 }

@@ -1,5 +1,6 @@
 package com.hsf.assignment.repository;
 
+import com.hsf.assignment.dto.request.UserProfileRequest;
 import com.hsf.assignment.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

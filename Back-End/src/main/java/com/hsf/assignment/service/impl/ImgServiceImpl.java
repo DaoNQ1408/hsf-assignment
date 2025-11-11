@@ -32,13 +32,29 @@ public class ImgServiceImpl implements ImageService {
     public ImageResponse uploadUserImage(String url) {
         try {
             User user = userUtils.getCurrentUser();
-            ImageRequest imageRequest = new ImageRequest(url);
-            Image image = imageMapper.toUserImageEntity(imageRequest);
-            image.setUser(user);
-            imageRepo.save(image);
-            return imageMapper.toResponse(image);
+
+            Image image = user.getImage();
+
+            if (image != null) {
+                image.setImageUrl(url);
+                image.setIsDeleted(false);
+
+                Image updatedImage = imageRepo.save(image);
+                return imageMapper.toResponse(updatedImage);
+
+            } else {
+                ImageRequest imageRequest = new ImageRequest(url);
+                Image newImage = imageMapper.toUserImageEntity(imageRequest);
+
+                newImage.setUser(user);
+                user.setImage(newImage);
+
+                Image savedImage = imageRepo.save(newImage);
+                return imageMapper.toResponse(savedImage);
+            }
+
         } catch (Exception e) {
-            throw new RuntimeException("Lỗi lưu metadata ảnh: " + e.getMessage());
+            throw new RuntimeException("Lỗi lưu/cập nhật metadata ảnh: " + e.getMessage());
         }
     }
 
