@@ -1,12 +1,17 @@
 package com.hsf.assignment.mapper;
+import com.hsf.assignment.dto.request.AdminUpdateRequest;
 import com.hsf.assignment.dto.request.RegisterRequest;
+import com.hsf.assignment.dto.response.AdminResponse;
 import com.hsf.assignment.dto.response.LoginResponse;
 import com.hsf.assignment.dto.response.RegisterResponse;
 import com.hsf.assignment.dto.response.UserResponse;
 import com.hsf.assignment.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
@@ -27,4 +32,9 @@ public interface UserMapper {
     LoginResponse toLoginResponse(User user);
 
     UserResponse toUserResponse(User user);
+
+    AdminResponse toAdminResponse(User user);
+
+    List<AdminResponse> toAdminResponseList(List<User> userList);
+    void updateUser(AdminUpdateRequest request, @MappingTarget User user);
 }
