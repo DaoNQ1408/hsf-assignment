@@ -1,7 +1,7 @@
 import { apiClient } from './apiConfig';
 import type { PetResponse } from './petService';
 
-export type ApplicationStatus = 'AVAILABLE' | 'PENDING' | 'ADOPTED' | 'HIDDEN';
+export type ApplicationStatus = 'AVAILABLE' | 'ADOPTED' | 'HIDDEN';
 
 export interface UserResponse {
   userId: number;

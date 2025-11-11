@@ -25,6 +25,7 @@ export default function Navbar() {
                 </svg>
               </div>
               <span className="text-xl font-bold text-amber-900">PetAdopt</span>
+              <span className="text-xl font-bold text-amber-900">PetAdopt</span>
             </Link>
           </div>
 
@@ -38,7 +39,34 @@ export default function Navbar() {
               Homepage
             </Link>
 
-            {isAuthenticated && (
+            {isAuthenticated && user?.role === 'ADMIN' ? (
+              <>
+                <Link
+                  to="/admin/users"
+                  className={`text-sm font-medium transition ${
+                    isActive('/admin/users') ? 'text-amber-600' : 'text-amber-700 hover:text-amber-600'
+                  }`}
+                >
+                  Manage Users
+                </Link>
+                <Link
+                  to="/admin/pets"
+                  className={`text-sm font-medium transition ${
+                    isActive('/admin/pets') ? 'text-amber-600' : 'text-amber-700 hover:text-amber-600'
+                  }`}
+                >
+                  Manage Pets
+                </Link>
+                <Link
+                  to="/admin/applications"
+                  className={`text-sm font-medium transition ${
+                    isActive('/admin/applications') ? 'text-amber-600' : 'text-amber-700 hover:text-amber-600'
+                  }`}
+                >
+                  Manage Applications
+                </Link>
+              </>
+            ) : isAuthenticated ? (
               <>
                 <Link
                   to="/pets"
@@ -65,7 +93,7 @@ export default function Navbar() {
                   My Profile
                 </Link>
               </>
-            )}
+            ) : null}
           </div>
 
           <div className="flex items-center gap-4">

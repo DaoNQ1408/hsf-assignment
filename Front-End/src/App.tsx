@@ -8,10 +8,25 @@ import RegisterPage from './pages/RegisterPage';
 import PetManagePage from './pages/PetManagePage';
 import ApplicationManagePage from './pages/ApplicationManagePage';
 import ProfilePage from './pages/ProfilePage';
+import AdminLayout from './pages/admin/AdminLayout';
+import UserManagementPage from './pages/admin/UserManagementPage';
+import PetManagementPage from './pages/admin/PetManagementPage';
+import ApplicationManagementPage from './pages/admin/ApplicationManagementPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuthStore();
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
+}
+
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, user } = useAuthStore();
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+  if (user?.role !== 'ADMIN') {
+    return <Navigate to="/" />;
+  }
+  return <>{children}</>;
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
@@ -52,6 +67,19 @@ function App() {
                 <ProfilePage />
               </ProtectedRoute>
             } />
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminLayout />
+                </AdminRoute>
+              }
+            >
+              <Route index element={<Navigate to="users" replace />} />
+              <Route path="users" element={<UserManagementPage />} />
+              <Route path="pets" element={<PetManagementPage />} />
+              <Route path="applications" element={<ApplicationManagementPage />} />
+            </Route>
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>

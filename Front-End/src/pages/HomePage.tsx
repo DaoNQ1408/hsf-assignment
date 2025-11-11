@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import ApplicationCard from '../components/ApplicationCard';
 import ApplicationDetailsModal from '../components/ApplicationDetailsModal';
+import LoginPromptModal from '../components/LoginPromptModal';
 import { useApplicationStore } from '../stores/applicationStore';
 import { useAuthStore } from '../stores/authStore';
 import type { AdoptionApplication } from '../types';
@@ -8,6 +9,7 @@ import type { AdoptionApplication } from '../types';
 export default function HomePage() {
   const [selectedApplication, setSelectedApplication] = useState<AdoptionApplication | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   const { getActiveApplications, fetchApplications } = useApplicationStore();
   const { user } = useAuthStore();
@@ -21,6 +23,10 @@ export default function HomePage() {
   }, [fetchApplications]);
 
   const handleViewDetails = (application: AdoptionApplication) => {
+    if (!user) {
+      setShowLoginPrompt(true);
+      return;
+    }
     setSelectedApplication(application);
     setIsModalOpen(true);
   };
@@ -119,6 +125,11 @@ export default function HomePage() {
         application={selectedApplication}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+      />
+
+      <LoginPromptModal
+        isOpen={showLoginPrompt}
+        onClose={() => setShowLoginPrompt(false)}
       />
     </div>
   );
