@@ -1,6 +1,5 @@
 package com.hsf.assignment.mapper;
 
-import com.hsf.assignment.Enum.PetSpecies;
 import com.hsf.assignment.dto.request.ApplicationRequest;
 import com.hsf.assignment.dto.request.ApplicationUpdateRequest;
 import com.hsf.assignment.dto.response.ApplicationResponse;
@@ -20,9 +19,8 @@ import org.mapstruct.*;
 public interface ApplicationMapper {
 
     @Mapping(target = "receiver", ignore = true)
-    @Mapping(target = "pet", source = "petId")
+    @Mapping(target = "pet", source = "petId", qualifiedByName = "mapPet")
     Application toApplication(ApplicationRequest applicationRequest);
-
 
     @Mapping(target = "pet", source = "pet")
     @Mapping(target = "author", source = "author")
