@@ -33,14 +33,14 @@ public class ApplicationController {
 
 
     @GetMapping("/by-author")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<List<ApplicationResponse>> getByAuthor() {
         return ResponseEntity.ok(applicationService.getByAuthor());
     }
 
 
     @GetMapping("/by-receiver")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<List<ApplicationResponse>> getByReceiver() {
         return ResponseEntity.ok(applicationService.getByReceiver());
     }
