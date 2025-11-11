@@ -39,4 +39,11 @@ public class UserController {
         AdminResponse response = userService.updatedUser(id, request);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<AdminResponse> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }

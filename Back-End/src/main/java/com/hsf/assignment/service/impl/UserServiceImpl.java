@@ -1,5 +1,6 @@
 package com.hsf.assignment.service.impl;
 
+import com.hsf.assignment.Enum.UserStatus;
 import com.hsf.assignment.dto.request.AdminUpdateRequest;
 import com.hsf.assignment.dto.response.AdminResponse;
 import com.hsf.assignment.entity.User;
@@ -38,5 +39,13 @@ public class UserServiceImpl implements UserService {
         userMapper.updateUser(adminUpdateRequest, user);
         User updatedUser = userRepository.save(user);
         return userMapper.toAdminResponse(updatedUser);
+    }
+
+    @Override
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+        user.setStatus(UserStatus.INACTIVE);
+        userRepository.save(user);
     }
 }

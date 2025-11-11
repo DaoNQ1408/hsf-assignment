@@ -9,4 +9,5 @@ public interface UserService{
     List<AdminResponse> getAllUsers();
     AdminResponse getUserById(Long userId);
     AdminResponse updatedUser(Long userId, AdminUpdateRequest adminUpdateRequest);
+    void deleteUser(Long userId);
 }
