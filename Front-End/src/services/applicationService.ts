@@ -24,6 +24,10 @@ export interface ApplicationResponse {
   receiver: UserResponse | null;
 }
 
+export interface AdoptRequest {
+    receiverMail: string;
+}
+
 export const applicationService = {
   // GET /api/applications - Get all applications
   getAllApplications: async (): Promise<ApplicationResponse[]> => {
@@ -78,12 +82,25 @@ export const applicationService = {
   },
 
   // PUT /api/applications/adopted/{applicationId}/receiver/{receiverId} - Mark as adopted
-  adoptApplication: async (applicationId: number, receiverId: number): Promise<ApplicationResponse> => {
-    const response = await apiClient.put<ApplicationResponse>(
-      `/api/applications/adopted/${applicationId}/receiver/${receiverId}`
-    );
-    return response.data;
-  },
+  // adoptApplication: async (applicationId: number, receiverMail: string): Promise<ApplicationResponse> => {
+  //   const response = await apiClient.put<ApplicationResponse>(
+  //     `/api/applications/adopted/${applicationId}/receiver/${receiverMail}`
+  //   );
+  //   return response.data;
+  // },
+
+    adoptApplication: async (applicationId: number, request: { receiverMail: string }): Promise<boolean> => {
+        try {
+            const response = await apiClient.put<ApplicationResponse>(
+                `/api/applications/adopted/${applicationId}`,
+                request  // Gửi object trong body
+            );
+            return response.status === 200;
+        } catch (error) {
+            console.error('Error adopting application:', error);
+            return false;
+        }
+    },
 
   // DELETE /api/applications/{id} - Delete application
   deleteApplication: async (id: number): Promise<ApplicationResponse> => {
@@ -91,3 +108,5 @@ export const applicationService = {
     return response.data;
   },
 };
+
+export const getApplicationsByReceiver = applicationService.getApplicationsByReceiver;

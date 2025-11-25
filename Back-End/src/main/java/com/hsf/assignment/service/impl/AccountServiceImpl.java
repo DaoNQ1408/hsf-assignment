@@ -40,4 +40,9 @@ public class AccountServiceImpl implements AccountService {
     public UserResponse findResponseById(Long userId) {
         return userMapper.toUserResponse(findById(userId));
     }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }
