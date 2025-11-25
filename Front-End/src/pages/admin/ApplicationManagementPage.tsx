@@ -207,6 +207,17 @@ export default function ApplicationManagementPage() {
                   )}
                 </div>
               </th>
+                <th
+                    className="py-2 px-4 border-b text-left text-amber-900 cursor-pointer hover:bg-amber-200"
+                    onClick={() => handleSort('status')}
+                >
+                    <div className="flex items-center gap-1">
+                        Receiver
+                        {sortColumn === 'status' && (
+                            <span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
+                        )}
+                    </div>
+                </th>
               <th
                 className="py-2 px-4 border-b text-left text-amber-900 cursor-pointer hover:bg-amber-200"
                 onClick={() => handleSort('createdAt')}
@@ -284,6 +295,7 @@ function ApplicationRow({ application, onUpdateStatus, onDelete }: ApplicationRo
           </span>
         )}
       </td>
+        <td className="py-2 px-4 border-b">{application.receiver?.email}</td>
       <td className="py-2 px-4 border-b">{new Date(application.createdAt).toLocaleDateString()}</td>
       <td className="py-2 px-4 border-b">
         {isEditing ? (

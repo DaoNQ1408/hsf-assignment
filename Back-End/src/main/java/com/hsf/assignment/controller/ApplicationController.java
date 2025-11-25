@@ -1,6 +1,7 @@
 package com.hsf.assignment.controller;
 
 import com.hsf.assignment.Enum.ApplicationStatus;
+import com.hsf.assignment.dto.request.AdoptRequest;
 import com.hsf.assignment.dto.request.ApplicationRequest;
 import com.hsf.assignment.dto.response.ApplicationResponse;
 import com.hsf.assignment.service.ApplicationService;
@@ -99,11 +100,11 @@ public class ApplicationController {
 //    }
 
 
-    @PutMapping("/adopted/{applicationId}/receiver/{receiverId}")
+    @PutMapping("/adopted/{applicationId}")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<ApplicationResponse> adoptedApplication(@PathVariable Long applicationId,
-                                                                  @PathVariable Long receiverId) {
-        return ResponseEntity.ok(applicationService.adoptedApplication(applicationId, receiverId));
+                                                                  @RequestBody AdoptRequest request) {
+        return ResponseEntity.ok(applicationService.adoptedApplication(applicationId, request));
     }
 
 

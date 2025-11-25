@@ -7,4 +7,5 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public interface AccountService extends UserDetailsService {
     User findById(Long userId);
     UserResponse findResponseById(Long userId);
+    User findByEmail(String email);
 }

@@ -1,6 +1,7 @@
 package com.hsf.assignment.service.impl;
 
 import com.hsf.assignment.Enum.ApplicationStatus;
+import com.hsf.assignment.dto.request.AdoptRequest;
 import com.hsf.assignment.dto.request.ApplicationRequest;
 import com.hsf.assignment.dto.request.ApplicationUpdateRequest;
 import com.hsf.assignment.dto.response.ApplicationResponse;
@@ -145,11 +146,15 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public ApplicationResponse adoptedApplication(Long applicationId, Long receiverId) {
+    public ApplicationResponse adoptedApplication(Long applicationId, AdoptRequest request) {
 
         User owner = userUtils.getCurrentUser();
         Application application = findById(applicationId);
-        User adopter = accountService.findById(receiverId);
+        User adopter = accountService.findByEmail(request.getReceiverMail());
+
+        if(adopter == null) {
+            throw new RuntimeException("Adopter with email " + request.getReceiverMail() + " not found.");
+        }
 
         if(application.getAuthor() != owner) {
             throw new RuntimeException("Only the author of the application can mark it as adopted.");

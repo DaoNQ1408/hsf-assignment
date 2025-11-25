@@ -1,0 +1,28 @@
+{
+  "groupId": 2,
+  "groupName": "Mixtape G House #99",
+  "leader": {
+    "studentId": 1,
+    "studentName": "Hoàng Xuân Hiệp",
+    "isLeader": true,
+    "majorName": "Software Enginerring"
+  },
+  "members": [
+    {
+      "studentId": 1,
+      "studentName": "Hoàng Xuân Hiệp",
+      "isLeader": true,
+      "majorName": "Software Enginerring"
+    },
+    {
+      "studentId": 6,
+      "studentName": "Quang Đạo",
+      "isLeader": false,
+      "majorName": "Software Enginerring"
+    }
+  ],
+  "templates": null,
+  "memberCount": 2,
+  "groupStatus": "ACTIVE",
+  "course": { "courseId": 1, "courseCode": "SE1234" }
+}
